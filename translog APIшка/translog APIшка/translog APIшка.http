@@ -1,0 +1,6 @@
+@translog_APIшка_HostAddress = http://localhost:5095
+
+GET {{translog_APIшка_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
