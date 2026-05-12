@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    background-color: white;
+}
+.auth
+{
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    
+}
+
+img 
+{
+    width: 260px;
+    height: 260px;
+    justify-content: center;
+    align-items: center;
+}
+#translog
+{
+    font-family: Inter;
+    font-size: 32px;
+    word-spacing: 2%;
+    font-weight: bold;
+    align-items: center;
+    color: #1D2D50;
+}
+.label
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 25px;
+    width: 500px;
+    height: 700px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+}
