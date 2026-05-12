@@ -91,7 +91,7 @@ input
 }
 .textinput
 {
-    width: 460px;
+    width: auto;
     align-self: flex-start;
     margin-left: 20px;
     text-align: left;
@@ -132,4 +132,22 @@ hr {
     width: 90%;
     border: none;
     border-top: 1px solid #C8D3E5;
+}
+.divhorizontal
+{
+    display:  flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 460px;
+    gap: 15px;
+}
+
+.inputmini
+{
+    width: 223px;
+    height: 50px;
+    background-color: #F6F9FC;
+    border-radius: 10px;
+    border: 1px solid #C8D3E5;
 }
