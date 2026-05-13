@@ -6,6 +6,34 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
+const departurepoint = ref('')
+const arrivalpoint = ref('')
+const weight = ref('')
+const volumem3 = ref('')
+const description = ref('')
+
+const order = async () =>
+{
+  const response = await fetch(
+    'http://localhost:5095/api/Order/CreateOrder',
+    {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        userId: parseInt(localStorage.getItem('userId')),
+        DeparturePoint: departurepoint.value,
+        ArrivalPoint: arrivalpoint.value,
+        Weight: parseFloat(weight.value),
+        Volumem3: parseFloat(volumem3.value),
+        Description: description.value,
+        Status: 'Ожидает',
+        ReceivedAt: new Date().toISOString()
+      })
+    }
+  )
+  const data = await response.json()
+  console.log(data)
+}
 
 
 </script>
@@ -46,6 +74,7 @@ import history from '../assets/images/history.png'
       <a class="logout">Выйти из системы</a>
     </div>
 
+    <form @submit.prevent="order">
     <div class="content">
       
       <div class="topbar">Новая заявка</div>
@@ -54,14 +83,15 @@ import history from '../assets/images/history.png'
         <p class="card-title">Оформление заявки на грузоперевозку</p>
 
         <h3>МАРШРУТ</h3>
+        
         <div class="row">
           <div class="field">
             <label>Пункт отправления</label>
-            <input type="text" value="Москва">
+            <input type="text" v-model="departurepoint" placeholder="Москва">
           </div>
           <div class="field">
             <label>Пункт прибытия</label>
-            <input type="text" value="Уфа">
+            <input type="text" v-model="arrivalpoint" placeholder="Уфа">
           </div>
         </div>
 
@@ -69,22 +99,23 @@ import history from '../assets/images/history.png'
         <div class="row">
           <div class="field">
             <label>Вес груза (тонн)</label>
-            <input type="text" value="0.5">
+            <input type="text" v-model="weight"  placeholder="0.5">
           </div>
           <div class="field">
             <label>Объем груза (м2)</label>
-            <input type="text" value="1.0">
+            <input type="text" v-model="volumem3" placeholder="1.0">
           </div>
         </div>
-
+        
         <div class="field">
           <label>Описание груза (необязательно)</label>
-          <textarea rows="5"></textarea>
+          <textarea rows="5" v-model="description"></textarea>
         </div>
-
+        
         <button class="submit">Подать заявку</button>
       </div>
     </div>
+  </form>
   </div>
 </template>
 

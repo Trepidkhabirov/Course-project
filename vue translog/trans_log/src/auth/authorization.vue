@@ -15,6 +15,7 @@ const auth = async () =>
     const data = await response.json()
     if (response.ok)
     {
+        localStorage.setItem('userId', data.userId)
       router.push('/neworder')
     }
     else
