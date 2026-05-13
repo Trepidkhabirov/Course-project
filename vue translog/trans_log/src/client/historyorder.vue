@@ -6,6 +6,8 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
+
+
 </script>
 
 <template>
@@ -39,7 +41,7 @@ import history from '../assets/images/history.png'
             <a class="menu-item">История заявок</a>
         </div>
         </div>
-
+        <hr>
       <a class="logout">Выйти из системы</a>
     </div>
 
@@ -75,6 +77,10 @@ import history from '../assets/images/history.png'
 </template>
 
 <style>
+
+ hr{
+    width: 340px;
+ }
 
 * {
   margin: 0;
@@ -129,13 +135,13 @@ body, html {
 }
 .logo h1 {
   font-family: Impact;
-  font-size: 26px;
+  font-size: 32px;
 }
 .logo h1 span {
   color: #4da6ff;          
 }
 .logo p {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 3px;      
   color: #a0aabf;
   margin-top: 3px;
@@ -159,8 +165,8 @@ body, html {
   margin-right: 12px;
   font-weight: bold;
 }
-.user-name { font-size: 13px; }
-.user-role { font-size: 11px; color: #a0aabf; }
+.user-name { font-size: 16px; }
+.user-role { font-size: 17px; color: #a0aabf; }
 
 .menu {
   margin-top: 15px;
@@ -197,7 +203,7 @@ body, html {
 
 .logout {
   padding: 15px 25px;
-  font-size: 12px;
+  font-size: 16px;
   color: #6b7590;
   cursor: pointer;
 }

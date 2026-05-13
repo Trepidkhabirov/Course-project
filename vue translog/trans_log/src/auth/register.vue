@@ -59,8 +59,18 @@ const register = async () =>
                     <input class="inputmini" v-model="nametxt"  placeholder="Иван" type="text" required>
                 </div>
             </div>
-              <p class="textinput">Отчество</p>
-              <input placeholder="Отчество" v-model="otchestvo" type="text">
+            <div class="divhorizontal">
+                <div class="div1">
+                    <p class="textinput">Отчество</p>
+                    <input placeholder="Отчество" v-model="otchestvo" class="inputmini" type="text">
+                </div> 
+                    <div class="div1">
+                        <p class="textinput">Номер телефона</p>
+                        <input type="text" class="inputmini" v-model="numberphone" placeholder="+7 (900) 321-67-52">
+                    </div>
+
+            </div>
+            
               <p class="textinput">Данные для входа</p>
               <p class="textinput">Логин</p>
             <input placeholder="Придумайте логин" v-model="logintxt" type="text"  required>

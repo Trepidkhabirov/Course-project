@@ -38,7 +38,7 @@ import history from '../assets/images/history.png'
             <a class="menu-item">История заявок</a>
         </div>
         </div>
-
+<hr>
       <a class="logout">Выйти из системы</a>
     </div>
 
@@ -70,8 +70,8 @@ import history from '../assets/images/history.png'
           </div>
         </div>
 
-        <h3>Текущие заявки</h3>
-        <div>
+        <h3 id="titleorder">Текущие заявки</h3>
+        <div >
           <table>
             <thead>
               <tr>
@@ -97,6 +97,14 @@ import history from '../assets/images/history.png'
 </template>
 
 <style>
+#titleorder
+{
+  padding-top: 30px;
+}
+ hr{
+    width: 340px;
+ }
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -253,14 +261,14 @@ body, html {
   margin-right: 12px;
   font-weight: bold;
 }
-.user-name { font-size: 13px; }
-.user-role { font-size: 11px; color: #a0aabf; }
+.user-name { font-size: 16px; }
+.user-role { font-size: 17px; color: #a0aabf; }
 
 
 
 .logout {
   padding: 15px 25px;
-  font-size: 12px;
+  font-size: 20px;
   color: #6b7590;
   cursor: pointer;
 }
@@ -276,13 +284,6 @@ body, html {
   font-size: 14px;
   cursor: pointer;          
   text-decoration: none;
-}
-
-.logout {
-  padding: 15px 25px;
-  font-size: 12px;
-  color: #6b7590;
-  cursor: pointer;
 }
 
 .row {

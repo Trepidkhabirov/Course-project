@@ -6,6 +6,8 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
+
+
 </script>
 
 <template>
@@ -40,6 +42,7 @@ import history from '../assets/images/history.png'
         </div>
         </div>
 
+        <hr>
       <a class="logout">Выйти из системы</a>
     </div>
 
@@ -49,18 +52,6 @@ import history from '../assets/images/history.png'
 
       <div class="card">
         <p class="card-title">Оформление заявки на грузоперевозку</p>
-
-        <h3>Данные клиента</h3>
-        <div class="row">
-          <div class="field">
-            <label>ФИО клиента</label>
-            <input type="text" value="Иванов Иван Иванович">
-          </div>
-          <div class="field">
-            <label>Номер телефона</label>
-            <input type="text" value="+7 (900) 321-67-52">
-          </div>
-        </div>
 
         <h3>МАРШРУТ</h3>
         <div class="row">
@@ -98,6 +89,10 @@ import history from '../assets/images/history.png'
 </template>
 
 <style>
+
+ hr{
+    width: 340px;
+ }
 .card-title
 {
   font-size: 22px;
@@ -157,13 +152,13 @@ body, html {
 }
 .logo h1 {
   font-family: Impact;
-  font-size: 26px;
+  font-size: 32px;
 }
 .logo h1 span {
   color: #4da6ff;          
 }
 .logo p {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 3px;      
   color: #a0aabf;
   margin-top: 3px;
@@ -260,12 +255,12 @@ body, html {
 
 
 .submit {
-  background: #2a7fff;
+  background: #1A5FBB;
   color: white;
   border: none;
   padding: 12px 30px;
-  border-radius: 4px;
-  font-size: 14px;
+  border-radius: 20px !important;
+  font-size: 18px;
   cursor: pointer;
   float: right;     
 }      
