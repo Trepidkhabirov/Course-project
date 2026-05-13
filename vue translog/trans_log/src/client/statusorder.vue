@@ -7,7 +7,6 @@ import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
 </script>
-
 <template>
   <div class="layout">
         <div class="sidebar">
@@ -28,11 +27,11 @@ import history from '../assets/images/history.png'
       <div class="menu">
         <div class="podmenu">
             <img :src="plus"> 
-            <a class="menu-item active" > Новая заявка</a>
+            <a class="menu-item active"> Новая заявка</a>
         </div>
         <div class="podmenu">
             <img :src="time">
-            <a class="menu-item" @click="$router.push('/statusorder')">Статус заявок</a>
+            <a class="menu-item">Статус заявок</a>
         </div >
         <div class="podmenu">
             <img :src="history">
@@ -219,14 +218,17 @@ body, html {
 .menu-item {
   display: block;            
   padding: 12px 25px;
-  color: black;
+  color: #c5cce0;
   font-size: 14px;
   cursor: pointer;          
   text-decoration: none;
 }
-.menu-item {
+.menu-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.menu-item.active {
   background: rgba(0,0,0,0.25);
-  color: black;
+  color: white;
 }
 
 .logout {
@@ -293,12 +295,10 @@ body, html {
     margin-right: 10px;
 }
 .topbar {
-  background: white; 
-  color: black;      
+  background: white;
   padding: 20px 40px;
   font-weight: bold;
-  font-size: 18px;    
-  border-bottom: 1px solid #d5dae3;
+  border-bottom: 1px solid #ddd;
 }
 
 .card {
@@ -306,10 +306,6 @@ body, html {
   margin: 30px 40px;
   padding: 30px;
   border-radius: 8px;
-}
-h3 
-{
-    color: black;
 }
 
 </style>
