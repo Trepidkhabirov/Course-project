@@ -20,6 +20,7 @@ html, body {
     align-items: center;
     min-height: 100vh;
     
+    
 }
 #background {
     display: flex;
@@ -27,13 +28,18 @@ html, body {
     align-items: center;
     width: 100%;
     gap: 10px;
+    background-color: white;
+    border-radius: 15px;
+    height: 850px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
 }
 
 img 
 {
     width: 400px;
     height: 250px;
-    justify-content: center;
+    margin-top: 10px;
+    justify-content: center; 
     align-items: center;
 }
 #translog
@@ -102,6 +108,9 @@ input
 }
 #noaccount
 {
+    display: flex;  
+    align-items: center;
+    justify-content: center;
     text-align: right;
     color: #1A5FBB;
     font-family: Inter;
@@ -150,4 +159,11 @@ hr {
     background-color: #F6F9FC;
     border-radius: 10px;
     border: 1px solid #C8D3E5;
+}
+.div1
+{
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+    justify-content: left;
 }

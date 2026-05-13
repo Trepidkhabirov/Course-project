@@ -1,18 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import authorization from '../auth/authorization.vue'
 import register from '@/auth/register.vue'
+import Neworder from '@/client/neworder.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: '/authorization',
+      name: 'authorization',
       component: authorization,
     },
     {
       path: '/register',
       name: 'register',
       component: register,
+    },
+    {
+      path: '/neworder',
+      name: 'neworder',
+      component: Neworder,
     },
     {
       path: '/about',

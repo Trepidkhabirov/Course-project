@@ -1,23 +1,48 @@
 <script setup>
 import logo from '../assets/images/logo.png'
 import './Authorization.css'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const logintxt = ref('')
+const passwordtxt = ref('')
+const error = ref('')
+const auth = async () => 
+{
+    const response = await fetch(
+        `http://localhost:5095/api/User/login?login=${logintxt.value}&password=${passwordtxt.value}`
+    )
+    const data = await response.json()
+    if (response.ok)
+    {
+      router.push('/neworder')
+    }
+    else
+    {
+      error.value = data.message
+      setTimeout(() => {
+      error.value = ''
+}, 5000)
+    }
+    console.log(data)
+}
+
 </script>
  
 <template>
-  <div class="auth">
     <div class="label">
-        <form id="background">
+        <form id="background" @submit.prevent="auth">
             <img :src="logo" class="logo">
             <h1 id="translog"><span>ТРАНС</span><span id="log">ЛОГ</span></h1>
             <p id="uchet">УЧЕТ ЗАЯВОК НА ГРУЗПЕРЕВОЗКИ</p>
             <hr>
             <p class="textinput">Логин</p>
-            <input placeholder="Введите логин" type="text"  required>
+            <input placeholder="Введите логин" v-model="logintxt" type="text"  required>
             <p class="textinput">Пароль</p>
-            <input placeholder="********" type="password">
+            <input placeholder="*********" v-model="passwordtxt" type="password">
+              <p v-if="error" style="color: red;">{{ error }}</p>
             <a id="noaccount" @click="$router.push('/register')">Нет аккаунта?</a>
             <button type="submit">Войти</button>
         </form>
     </div>
-  </div>
 </template>
