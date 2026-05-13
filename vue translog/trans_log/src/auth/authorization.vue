@@ -30,19 +30,21 @@ const auth = async () =>
 </script>
  
 <template>
-    <div class="label">
-        <form id="background" @submit.prevent="auth">
-            <img :src="logo" class="logo">
-            <h1 id="translog"><span>ТРАНС</span><span id="log">ЛОГ</span></h1>
-            <p id="uchet">УЧЕТ ЗАЯВОК НА ГРУЗПЕРЕВОЗКИ</p>
-            <hr>
-            <p class="textinput">Логин</p>
-            <input placeholder="Введите логин" v-model="logintxt" type="text"  required>
-            <p class="textinput">Пароль</p>
-            <input placeholder="*********" v-model="passwordtxt" type="password">
+    <div class="auth">
+        <div class="label">
+            <form id="background" @submit.prevent="auth">
+                <img :src="logo" class="logo">
+                <h1 id="translog"><span>ТРАНС</span><span id="log">ЛОГ</span></h1>
+                <p id="uchet">УЧЕТ ЗАЯВОК НА ГРУЗПЕРЕВОЗКИ</p>
+                <hr>
+                <p class="textinput">Логин</p>
+                <input placeholder="Введите логин" v-model="logintxt" type="text"  required>
+                <p class="textinput">Пароль</p>
+                <input placeholder="*********" v-model="passwordtxt" type="password">
               <p v-if="error" style="color: red;">{{ error }}</p>
-            <a id="noaccount" @click="$router.push('/register')">Нет аккаунта?</a>
+              <a id="noaccount" @click="$router.push('/register')">Нет аккаунта?</a>
             <button type="submit">Войти</button>
         </form>
     </div>
+</div>
 </template>

@@ -7,6 +7,7 @@ import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
 </script>
+
 <template>
   <div class="layout">
         <div class="sidebar">
@@ -25,15 +26,15 @@ import history from '../assets/images/history.png'
       </div>
 
       <div class="menu">
-        <div class="podmenu" @click="$router.push('/neworder')">
+        <div class="podmenu">
             <img :src="plus"> 
-            <a class="menu-item" > Новая заявка</a>
+            <a class="menu-item active" @click="$router.push('/neworder')">Новая заявка</a>
         </div>
-        <div class="podmenu_active" >
+        <div class="podmenu">
             <img :src="time">
-            <a class="menu-item" >Статус заявок</a>
+            <a class="menu-item" @click="$router.push('/statusorder')">Статус заявок</a>
         </div >
-        <div class="podmenu" @click="$router.push('/historyorder')">
+        <div class="podmenu_active">
             <img :src="history">
             <a class="menu-item">История заявок</a>
         </div>
@@ -44,117 +45,36 @@ import history from '../assets/images/history.png'
 
     <div class="content">
       
-      <div class="topbar">Статус заявки</div>
+      <div class="topbar">История заявок</div>
+        <div class="card">
 
-      <div class="card">
-        <div class="row">
-          <div class="lab">
-              <p class="lab_title">Всего заявок</p>
-              <p></p>
-              <p class="lab_other">За всё время</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">В работе</p>
-            <p></p>
-          <p class="lab_other">активных</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Доставлено</p>
-            <p></p>
-            <p class="lab_other">завершено</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Ожидает</p>
-            <p></p>
-            <p class="lab_other">в обработке</p>
-          </div>
-        </div>
-
-        <h3>Текущие заявки</h3>
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <td>№ ЗАЯВКИ</td>
-                <td>ДАТА</td>
-                <td>МАРШРУТ</td>
-                <td>ГРУЗ (Т)</td>
-                <td>СТАТУС</td>
+            <h3>История всех заявок</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>№ ЗАЯВКИ</td>
+                            <td>ДАТА</td>
+                            <td>МАРШРУТ</td>
+                            <td>ГРУЗ (Т)</td>
+                            <td>СТАТУС</td>
               </tr>
             </thead>
             <tbody>
-              <td>#1</td>
-        <td>29.04.2026</td>
+                <td>#1</td>
+                <td>29.04.2026</td>
         <td>Москва → Уфа</td>
         <td>1.5</td>
         <td><span class="status выполняется">Выполняется</span></td>
             </tbody>
-            </table>
-        </div>
-        </div>
+        </table>
     </div>
-  </div>
+</div>
+</div>
+</div>
 </template>
 
 <style>
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-thead tr {
-  border-bottom: 1px solid #d5dae3;
-}
-th {
-  text-align: left;
-  padding: 10px 15px;
-  font-size: 12px;
-  color: #7a8ba8;
-  font-weight: 600;
-}
-td {
-  padding: 15px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #1D2D50;
-}
-.status {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: bold;
-}
-.выполняется {
-  background: #2ecc71;
-  color: white;
-}
-
-.lab
-{
-  display: flex;
-  width: 330px;
-  height: 180px;
-  border-radius: 15px;
-  border: solid #C8D3E5 2px;
-  background-color: white;
-  flex-direction: column;
-}
-.lab .lab_title
-{
-font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-font-size: 22px;
-font-weight: bold;
-color: #7A8BA8;
-padding-left: 15px;
-padding-top: 10px;
-}
-.lab_other
-{
-  color: #7A8BA8;
-  font-size: 18px;
-  padding-top: 80px;
-  padding-left: 15px;
-}
 
 * {
   margin: 0;
@@ -221,20 +141,6 @@ body, html {
   margin-top: 3px;
 }
 
-.podmenu_active
-{
-   display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 25px;
-  background: rgba(0,0,0,0.25); ;
-}
-.podmenu_active img
-{
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
 
 .user {
   display: flex;           
@@ -256,26 +162,37 @@ body, html {
 .user-name { font-size: 13px; }
 .user-role { font-size: 11px; color: #a0aabf; }
 
-
-
-.logout {
-  padding: 15px 25px;
-  font-size: 12px;
-  color: #6b7590;
-  cursor: pointer;
-}
-
 .menu {
   margin-top: 15px;
-  flex: 1;                   
+  flex: 1;                
 }
 .menu-item {
-  display: inline;            
+  display: block;           
   padding: 12px 25px;
   color: #c5cce0;
   font-size: 14px;
   cursor: pointer;          
   text-decoration: none;
+}
+.podmenu_active
+{
+   display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 25px;
+  background: rgba(0,0,0,0.25); ;
+}
+.podmenu_active img
+{
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+.logout {
+  padding: 15px 25px;
+  font-size: 12px;
+  color: #6b7590;
+  cursor: pointer;
 }
 
 .logout {
@@ -342,10 +259,12 @@ body, html {
     margin-right: 10px;
 }
 .topbar {
-  background: white;
+  background: white; 
+  color: black;      
   padding: 20px 40px;
   font-weight: bold;
-  border-bottom: 1px solid #ddd;
+  font-size: 18px;    
+  border-bottom: 1px solid #d5dae3;
 }
 
 .card {
@@ -354,11 +273,9 @@ body, html {
   padding: 30px;
   border-radius: 8px;
 }
-
-a
+h3 
 {
-  text-decoration: none;
+    color: black;
 }
-
 
 </style>

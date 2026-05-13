@@ -3,6 +3,7 @@ import authorization from '../auth/authorization.vue'
 import register from '@/auth/register.vue'
 import Neworder from '@/client/neworder.vue'
 import Statusorder from '@/client/statusorder.vue'
+import Historyorder from '@/client/historyorder.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -21,10 +22,15 @@ const router = createRouter({
       name: 'neworder',
       component: Neworder,
     },
-        {
+    {
       path: '/statusorder',
       name: 'statusorder',
       component: Statusorder,
+    },
+    {
+      path: '/historyorder',
+      name: 'historyorder',
+      component: Historyorder,
     },
     {
       path: '/about',

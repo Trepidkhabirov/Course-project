@@ -26,15 +26,15 @@ import history from '../assets/images/history.png'
       </div>
 
       <div class="menu">
-        <div class="podmenu">
+        <div class="podmenu_active">
             <img :src="plus"> 
-            <a class="menu-item active" > Новая заявка</a>
+            <a class="menu-item active" >Новая заявка</a>
         </div>
-        <div class="podmenu">
+        <div class="podmenu" @click="$router.push('/statusorder')">
             <img :src="time">
-            <a class="menu-item" @click="$router.push('/statusorder')">Статус заявок</a>
+            <a class="menu-item" >Статус заявок</a>
         </div >
-        <div class="podmenu">
+        <div class="podmenu" @click="$router.push('/historyorder')">
             <img :src="history">
             <a class="menu-item">История заявок</a>
         </div>
@@ -98,6 +98,11 @@ import history from '../assets/images/history.png'
 </template>
 
 <style>
+.card-title
+{
+  font-size: 22px;
+  color: black;
+}
 
 * {
   margin: 0;
@@ -197,36 +202,25 @@ body, html {
   cursor: pointer;          
   text-decoration: none;
 }
-.menu-item:hover {
-  background: rgba(255,255,255,0.05);
+.podmenu_active
+{
+   display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 25px;
+  background: rgba(0,0,0,0.25); ;
 }
-.menu-item.active {
-  background: rgba(0,0,0,0.25); 
-  color: white;
+.podmenu_active img
+{
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
 }
-
 .logout {
   padding: 15px 25px;
   font-size: 12px;
   color: #6b7590;
   cursor: pointer;
-}
-
-.menu {
-  margin-top: 15px;
-  flex: 1;                   
-}
-.menu-item {
-  display: block;            
-  padding: 12px 25px;
-  color: black;
-  font-size: 14px;
-  cursor: pointer;          
-  text-decoration: none;
-}
-.menu-item {
-  background: rgba(0,0,0,0.25);
-  color: black;
 }
 
 .logout {

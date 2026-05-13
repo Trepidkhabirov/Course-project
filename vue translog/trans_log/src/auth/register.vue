@@ -41,9 +41,10 @@ const register = async () =>
 </script>
 
 <template>
-    <div class="label">
-        <form id="background"  @submit.prevent="register">
-            <img :src="logo" class="logo">
+    <div class="auth">
+        <div class="label">
+            <form id="background"  @submit.prevent="register">
+                <img :src="logo" class="logo">
             <h1 id="translog"><span>ТРАНС</span><span id="log">ЛОГ</span></h1>
             <p id="uchet">РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ</p>
             <hr>
@@ -59,15 +60,15 @@ const register = async () =>
                 </div>
             </div>
               <p class="textinput">Отчество</p>
-            <input placeholder="Отчество" v-model="otchestvo" type="text">
-            <p class="textinput">Данные для входа</p>
+              <input placeholder="Отчество" v-model="otchestvo" type="text">
+              <p class="textinput">Данные для входа</p>
               <p class="textinput">Логин</p>
             <input placeholder="Придумайте логин" v-model="logintxt" type="text"  required>
             <p class="textinput">Пароль</p>
             <input placeholder="***********" v-model="passwordtxt" type="password">
             <button type="submit">Регистрация</button>
-            <p v-if="error" style="color: red;">{{ error }}</p>
             <a id="noaccount" @click="$router.push('/authorization')" >Есть аккаунт? Войдите</a>
         </form>
     </div>
+</div>
 </template>
