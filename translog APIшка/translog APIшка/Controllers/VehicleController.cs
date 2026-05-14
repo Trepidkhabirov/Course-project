@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using translog_APIшка.Models;
+using translog_APIшка.Model;
 
 namespace translog_APIшка.Controllers;
 
@@ -15,7 +15,7 @@ public class VehicleController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var db = new TranslogContext();
+        var db = new TransLogCourseContext();
         var vehicle = db.Vehicles.ToList();
         if (vehicle.Count == 0)
         {
@@ -34,15 +34,16 @@ public class VehicleController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var db = new TranslogContext();
+        var db = new TransLogCourseContext();
         var newVehicle = new Vehicle
         {
             LicensePlate = model.LicensePlate,
             Brand = model.Brand,
-            Type = model.Type,
-            LoadCapacity = model.LoadCapacity,
-            BaseRatePerKm = model.BaseRatePerKm,
-            DriverId = model.DriverId
+            Model = model.Model,
+            PayloadKg = model.PayloadKg,
+            VolumeM3 = model.VolumeM3,
+            VehicleId = model.VehicleId,
+            BodyType = model.BodyType
         };
         db.Vehicles.Add(newVehicle);
         db.SaveChanges();
@@ -60,7 +61,7 @@ public class VehicleController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var db = new TranslogContext();
+        var db = new TransLogCourseContext();
         var vehicle = db.Vehicles.FromSqlRaw($"select * from vehicles where vehicle_id = '{vehicleId}'").ToList();
         if (vehicle.Count == 0)
         {
@@ -70,12 +71,13 @@ public class VehicleController : ControllerBase
         {
             foreach (var v in vehicle)
             {
-            v.LicensePlate = model.LicensePlate;
-            v.Brand = model.Brand;
-            v.Type = model.Type;
-            v.LoadCapacity = model.LoadCapacity;
-            v.BaseRatePerKm = model.BaseRatePerKm;
-            v.DriverId = model.DriverId;
+                v.LicensePlate = model.LicensePlate;
+                v.Brand = model.Brand;
+                v.Model = model.Model;
+                v.PayloadKg = model.PayloadKg;
+                v.VolumeM3 = model.VolumeM3;
+                v.VehicleId = model.VehicleId;
+                v.BodyType = model.BodyType;
             }
             db.SaveChanges();
             return Ok(new {message = "Машина обновлена!",  vehicle});
@@ -85,17 +87,17 @@ public class VehicleController : ControllerBase
 
 public class VehicleModel
 {
+    public int VehicleId { get; set; }
 
-    public string LicensePlate { get; set; } = null!;
+    public string? LicensePlate { get; set; }
 
-    public string Brand { get; set; } = null!;
+    public string? Brand { get; set; }
 
-    public string Type { get; set; } = null!;
+    public string? Model { get; set; }
 
-    public decimal LoadCapacity { get; set; }
+    public decimal? PayloadKg { get; set; }
 
-    public decimal BaseRatePerKm { get; set; }
+    public decimal? VolumeM3 { get; set; }
 
-    public int? DriverId { get; set; }
-
+    public string? BodyType { get; set; }
 }

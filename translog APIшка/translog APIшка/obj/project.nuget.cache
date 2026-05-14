@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BBi1s9zsdJk=",
+  "dgSpecHash": "adWO645CabQ=",
   "success": true,
-  "projectFilePath": "/home/irhan/RiderProjects/translog APIшка/translog APIшка/translog APIшка.csproj",
+  "projectFilePath": "/home/irhan/Documents/course project/translog APIшка/translog APIшка/translog APIшка.csproj",
   "expectedPackageFiles": [
     "/home/irhan/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
     "/home/irhan/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",

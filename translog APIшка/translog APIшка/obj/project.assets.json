@@ -2903,11 +2903,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/irhan/RiderProjects/translog APIшка/translog APIшка/translog APIшка.csproj",
+      "projectUniqueName": "/home/irhan/Documents/course project/translog APIшка/translog APIшка/translog APIшка.csproj",
       "projectName": "translog APIшка",
-      "projectPath": "/home/irhan/RiderProjects/translog APIшка/translog APIшка/translog APIшка.csproj",
+      "projectPath": "/home/irhan/Documents/course project/translog APIшка/translog APIшка/translog APIшка.csproj",
       "packagesPath": "/home/irhan/.nuget/packages/",
-      "outputPath": "/home/irhan/RiderProjects/translog APIшка/translog APIшка/obj/",
+      "outputPath": "/home/irhan/Documents/course project/translog APIшка/translog APIшка/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/irhan/.nuget/NuGet/NuGet.Config"
