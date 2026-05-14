@@ -9,26 +9,58 @@ import transport from '../assets/images/transport.png'
 const showTripModal = ref(false)
 const currentOrder = ref(null)
 const tripData = ref({
-  driver: '',
-  vehicle: '',
+  vehicleId: null,
   from: '',
   to: '',
-  distance: '',
+  distance_km: '',
   departureDate: '',
   arrivalDate: ''
 })
-
+const saveTrip = async () =>
+{
+  const response = await fetch(
+    `http://localhost:5095/api/Order/UpdateOrder?OrderId=${currentOrder.value.orderId}`,
+    {
+      method: "PUT",
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        Status: 'Выполняется',
+        DepartureTime: tripData.value.departureDate,
+        ArrivalTime: tripData.value.arrivalDate,
+        vehicleId: tripData.value.vehicleId,
+        distance_km: tripData.value.distance_km
+      })
+    }
+  )
+  const data = await response.json()
+  console.log(data)
+  showTripModal.value = false
+  const res = await fetch('http://localhost:5095/api/Order/GetOrder')
+  orders.value = await res.json()
+}
 
 const openTripModal = (order) => {
   currentOrder.value = order
   tripData.value = {
-    driver: 'Петров А.В - Scania',
+    vehicleId: order.vehicleId || null,
     from: order.departurePoint,
     to: order.arrivalPoint,
-    distance: ''
+    distance_km: order.distanceKm  || '',
+     departureDate: order.departureTime || '',
+    arrivalDate: order.arrivalTime || ''
+    
   }
+  console.log('Полный объект заказа:', order)
+  console.log('distance_km:', order.distance_km)
+  console.log('DistanceKm:', order.distanceKm)
   showTripModal.value = true
 }
+const selectedDriverName = computed(() => {
+  if (!tripData.value.vehicleId) return ''
+  const driver = drivers.value.find(d => d.vehicleId === tripData.value.vehicleId)
+  if (!driver || !driver.user) return 'Водитель не привязан'
+  return driver.user.fullName
+})
 
 const departurepoint = ref('')
 const arrivalpoint = ref('')
@@ -36,7 +68,8 @@ const weight = ref('')
 const volumem3 = ref('')
 const description = ref('')
 const orders = ref([])
-
+const drivers = ref([])
+const vehicles = ref([])  
 onMounted(async () => {
 {
   const userID = parseInt(localStorage.getItem('userId'))
@@ -45,6 +78,13 @@ onMounted(async () => {
     const data = await response.json()
   orders.value = data
   console.log(data)
+  const response2 = await fetch('http://localhost:5095/api/Driver/GetDrivers')
+  drivers.value = await response2.json()
+console.log('drivers:', drivers.value)
+const response3 = await fetch('http://localhost:5095/api/Vehicle/GetTransport')
+  vehicles.value = await response3.json()
+  console.log('vehicles:', vehicles.value)
+  
 }
 })
 const logout = () => {
@@ -156,12 +196,17 @@ const logout = () => {
     
     <div class="simple-row">
       <div class="simple-field">
-        <label>Водитель</label>
-        <input v-model="tripData.driver" placeholder="Петров А.В">
+        <label>Выберите транспорт</label>
+        <select v-model="tripData.vehicleId" class="simple-select">
+          <option value="Выберите транспорт"></option>
+          <option v-for="v in vehicles" :key="v.vehicleId" :value="v.vehicleId">
+            {{ v.brand }} {{ v.model }} {{ v.licensePlate }}
+          </option>
+        </select>
       </div>
       <div class="simple-field">
-        <label>Машина</label>
-        <input v-model="tripData.vehicle" placeholder="Scania R450">
+        <label>Водитель</label>
+        <input :value="selectedDriverName" disabled placeholder="Выберите транспорт" >
       </div>
     </div>
 
@@ -189,7 +234,7 @@ const logout = () => {
     
     <div class="simple-field">
       <label>Длина маршрута (км)</label>
-      <input type="number" v-model="tripData.distance">
+      <input type="number" v-model="tripData.distance_km">
     </div>
     
     <div class="simple-buttons">
@@ -563,6 +608,15 @@ a
 
 .simple-save:hover {
   background: #1f6fe0;
+}
+.simple-select {
+  padding: 10px 14px;
+  border: 1px solid #d5dae3;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  background: white;
 }
 
 </style>

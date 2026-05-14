@@ -12,18 +12,11 @@ namespace translog_APIшка.Controllers;
       [HttpGet("GetDrivers")]
       public IActionResult GetDrivers()
       {
-          if (!ModelState.IsValid)
-          {
-              return BadRequest(ModelState);
-          }
           var db = new TransLogCourseContext();
-          var drivers = db.Drivers.ToList();
-          if (drivers.Count() == 0)
-              return Unauthorized("Водителей нету");
-          else
-          {
-              return Ok(drivers);           
-          }
+          var drivers = db.Drivers.Include(d => d.User).ToList();
+          if (drivers.Count == 0)
+              return NotFound(new { message = "Водителей нету" });
+          return Ok(drivers);
       }
  
       [HttpPost("AddDriver")]

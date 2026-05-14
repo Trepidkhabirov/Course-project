@@ -93,6 +93,9 @@ public partial class TransLogCourseContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
+            entity.Property(e => e.DistanceKm)
+                .HasColumnType("int(11)")
+                .HasColumnName("distance_km");
             entity.Property(e => e.ReceivedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("received_at");

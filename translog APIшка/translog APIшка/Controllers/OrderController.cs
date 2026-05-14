@@ -49,7 +49,7 @@
               UserId = model.UserId,
               VehicleId = model.VehicleId,
               DepartureTime = model.DepartureTime,
-              ArrivalTime = model.ArrivalTime
+              ArrivalTime = model.ArrivalTime,
           };
           db.Orders.Add(newOrder);
           db.SaveChanges();
@@ -60,8 +60,8 @@
           });
       }
   
-      [HttpPut("UpdateStaus")]
-      public IActionResult UpdateStatus(int OrderId, OrderModel model)
+      [HttpPut("UpdateOrder")]
+      public IActionResult UpdateStatus(int OrderId, [FromBody] OrderModel model)
       {
           if (!ModelState.IsValid)
           {
@@ -78,9 +78,14 @@
               foreach (var o in order)
               {
                   o.Status = model.Status;
+                  o.DepartureTime = model.DepartureTime;
+                  o.ArrivalTime = model.ArrivalTime;
+                  o.VehicleId = model.VehicleId;
+                  o.DistanceKm = model.Distance_km;
+
               }
               db.SaveChanges();
-              return Ok(new { message = "Статус заказа изменен!", order});
+              return Ok(new { message = "Заказ обновлен!", order});
           }
       }
   
@@ -129,4 +134,5 @@
       public DateOnly? ArrivalTime { get; set; }
   
       public string? Description { get; set; }
+      public int Distance_km { get; set; }
   }

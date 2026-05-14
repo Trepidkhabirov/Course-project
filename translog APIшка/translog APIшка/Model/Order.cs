@@ -29,6 +29,8 @@ public partial class Order
 
     public string? Description { get; set; }
 
+    public int? DistanceKm { get; set; }
+
     public virtual User User { get; set; } = null!;
 
     public virtual Vehicle? Vehicle { get; set; }
