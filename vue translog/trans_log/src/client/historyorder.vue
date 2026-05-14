@@ -6,7 +6,10 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
-
+const logout = () => {
+  localStorage.clear()
+  router.push('/authorization')
+}
 
 </script>
 
@@ -42,7 +45,7 @@ import history from '../assets/images/history.png'
         </div>
         </div>
         <hr>
-      <a class="logout">Выйти из системы</a>
+      <a class="logout" click="logout">Выйти из системы</a>
     </div>
 
     <div class="content">

@@ -9,6 +9,7 @@ const nametxt = ref('')
 const otchestvo = ref('')
 const logintxt = ref('')
 const passwordtxt = ref('')
+const numberphone = ref('')
 const error = ref('')
 const fullname = computed(() => `${surnametxt.value} ${nametxt.value} ${otchestvo.value}`)
 const register = async () => 
@@ -22,6 +23,7 @@ const register = async () =>
                 username: logintxt.value,
                 password: passwordtxt.value,
                 fullname: fullname.value,
+                numberphone: numberphone.value,
                 roleId: 4,
                 isActive: 1
             })  
@@ -36,7 +38,7 @@ const register = async () =>
     {
         error.value = data.message
     }
-    console.log(fullname.value, logintxt.value, passwordtxt.value)
+    console.log(data)
 }
 </script>
 

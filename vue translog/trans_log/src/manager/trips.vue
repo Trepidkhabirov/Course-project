@@ -2,43 +2,15 @@
 import router from '@/router';
 import logo from '../assets/images/logo.png'
 import { ref, computed } from 'vue'
-import plus from '../assets/images/plus.png'
-import time from '../assets/images/time.png'
-import history from '../assets/images/history.png'
+import order from '../assets/images/order.png'
+import people from '../assets/images/people.png'
+import transport from '../assets/images/transport.png'
 
-const departurepoint = ref('')
-const arrivalpoint = ref('')
-const weight = ref('')
-const volumem3 = ref('')
-const description = ref('')
 
-const order = async () =>
-{
-  const response = await fetch(
-    'http://localhost:5095/api/Order/CreateOrder',
-    {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        userId: parseInt(localStorage.getItem('userId')),
-        DeparturePoint: departurepoint.value,
-        ArrivalPoint: arrivalpoint.value,
-        Weight: parseFloat(weight.value),
-        Volumem3: parseFloat(volumem3.value),
-        Description: description.value,
-        Status: 'Ожидает',
-        ReceivedAt: new Date().toISOString()
-      })
-    }
-  )
-  const data = await response.json()
-  console.log(data)
-}
 const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
-
 
 </script>
 
@@ -55,72 +27,61 @@ const logout = () => {
         <div class="avatar">ИИ</div>
         <div>
           <p class="user-name">Иванов И. И.</p>
-          <p class="user-role">Клиент</p>
+          <p class="user-role">Менеджер</p>
         </div>
       </div>
 
       <div class="menu">
+        <div class="podmenu">
+            <img :src="order"> 
+            <a class="menu-item active" @click="$router.push('/addorder')">Заявки</a>
+        </div>
         <div class="podmenu_active">
-            <img :src="plus"> 
-            <a class="menu-item active" >Новая заявка</a>
-        </div>
-        <div class="podmenu" @click="$router.push('/statusorder')">
-            <img :src="time">
-            <a class="menu-item" >Статус заявок</a>
+            <img :src="transport">
+            <a class="menu-item" @click="$router.push('/trips')">Рейсы</a>
         </div >
-        <div class="podmenu" @click="$router.push('/historyorder')">
-            <img :src="history">
-            <a class="menu-item">История заявок</a>
+        <div class="podmenu">
+            <img :src="people">
+            <a class="menu-item">Водители</a>
         </div>
         </div>
-
         <hr>
       <a class="logout" @click="logout">Выйти из системы</a>
     </div>
 
-    <form @submit.prevent="order">
     <div class="content">
       
-      <div class="topbar">Новая заявка</div>
-
-      <div class="card">
-        <p class="card-title">Оформление заявки на грузоперевозку</p>
-
-        <h3>МАРШРУТ</h3>
-        
-        <div class="row">
-          <div class="field">
-            <label>Пункт отправления</label>
-            <input type="text" v-model="departurepoint" placeholder="Москва">
-          </div>
-          <div class="field">
-            <label>Пункт прибытия</label>
-            <input type="text" v-model="arrivalpoint" placeholder="Уфа">
-          </div>
-        </div>
-
-        <h3>ПАРАМЕТРЫ ГРУЗА</h3>
-        <div class="row">
-          <div class="field">
-            <label>Вес груза (тонн)</label>
-            <input type="text" v-model="weight"  placeholder="0.5">
-          </div>
-          <div class="field">
-            <label>Объем груза (м2)</label>
-            <input type="text" v-model="volumem3" placeholder="1.0">
-          </div>
-        </div>
-        
-        <div class="field">
-          <label>Описание груза (необязательно)</label>
-          <textarea rows="5" v-model="description"></textarea>
-        </div>
-        
-        <button class="submit">Подать заявку</button>
-      </div>
+      <div class="topbar">Список рейсов</div>
+        <div class="card">
+            <h3>Список рейсов</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>№ рейса</td>
+                            <td>№ ЗАЯВКИ</td>
+                            <td>Водитель</td>
+                            <td>ДАТА</td>
+                            <td>МАРШРУТ</td>
+                            <td>Отправление</td>
+                            <td>Прибытие</td>
+                            <td>КМ</td>
+                            <td>ГРУЗ (Т)</td>
+                            <td>СТАТУС</td>
+              </tr>
+            </thead>
+            <tbody>
+                <td>#1</td>
+                <td>29.04.2026</td>
+        <td>Москва → Уфа</td>
+        <td>1.5</td>
+        <td><span class="status выполняется">Выполняется</span></td>
+            </tbody>
+        </table>
     </div>
-  </form>
-  </div>
+</div>
+</div>
+</div>
 </template>
 
 <style>
@@ -128,11 +89,6 @@ const logout = () => {
  hr{
     width: 340px;
  }
-.card-title
-{
-  font-size: 22px;
-  color: black;
-}
 
 * {
   margin: 0;
@@ -217,8 +173,8 @@ body, html {
   margin-right: 12px;
   font-weight: bold;
 }
-.user-name { font-size: 13px; }
-.user-role { font-size: 11px; color: #a0aabf; }
+.user-name { font-size: 16px; }
+.user-role { font-size: 17px; color: #a0aabf; }
 
 .menu {
   margin-top: 15px;
@@ -255,7 +211,7 @@ body, html {
 
 .logout {
   padding: 15px 25px;
-  font-size: 12px;
+  font-size: 16px;
   color: #6b7590;
   cursor: pointer;
 }
@@ -290,12 +246,12 @@ body, html {
 
 
 .submit {
-  background: #1A5FBB;
+  background: #2a7fff;
   color: white;
   border: none;
   padding: 12px 30px;
-  border-radius: 20px !important;
-  font-size: 18px;
+  border-radius: 4px;
+  font-size: 14px;
   cursor: pointer;
   float: right;     
 }      

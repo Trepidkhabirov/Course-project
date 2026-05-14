@@ -2,9 +2,33 @@
 import router from '@/router';
 import logo from '../assets/images/logo.png'
 import { ref, computed, onMounted } from 'vue'
-import plus from '../assets/images/plus.png'
-import time from '../assets/images/time.png'
-import history from '../assets/images/history.png'
+import order from '../assets/images/order.png'
+import people from '../assets/images/people.png'
+import transport from '../assets/images/transport.png'
+
+const showTripModal = ref(false)
+const currentOrder = ref(null)
+const tripData = ref({
+  driver: '',
+  vehicle: '',
+  from: '',
+  to: '',
+  distance: '',
+  departureDate: '',
+  arrivalDate: ''
+})
+
+
+const openTripModal = (order) => {
+  currentOrder.value = order
+  tripData.value = {
+    driver: 'Петров А.В - Scania',
+    from: order.departurePoint,
+    to: order.arrivalPoint,
+    distance: ''
+  }
+  showTripModal.value = true
+}
 
 const departurepoint = ref('')
 const arrivalpoint = ref('')
@@ -17,7 +41,7 @@ onMounted(async () => {
 {
   const userID = parseInt(localStorage.getItem('userId'))
   const response = await fetch(
-    `http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
+    `http://localhost:5095/api/Order/GetOrder`)
     const data = await response.json()
   orders.value = data
   console.log(data)
@@ -43,22 +67,22 @@ const logout = () => {
         <div class="avatar">ИИ</div>
         <div>
           <p class="user-name">Иванов И. И.</p>
-          <p class="user-role">Клиент</p>
+          <p class="user-role">Менеджер</p>
         </div>
       </div>
 
       <div class="menu">
-        <div class="podmenu" @click="$router.push('/neworder')">
-            <img :src="plus"> 
-            <a class="menu-item" > Новая заявка</a>
+        <div class="podmenu_active">
+            <img :src="order"> 
+            <a class="menu-item" > Заявки</a>
         </div>
-        <div class="podmenu_active" >
-            <img :src="time">
-            <a class="menu-item" >Статус заявок</a>
+        <div class="podmenu" @click="$router.push('/trips')" >
+            <img :src="transport">
+            <a class="menu-item" >Рейсы</a>
         </div >
-        <div class="podmenu" @click="$router.push('/historyorder')">
-            <img :src="history">
-            <a class="menu-item">История заявок</a>
+        <div class="podmenu" @click="$router.push('/drivers')">
+            <img :src="people">
+            <a class="menu-item">Водители </a>
         </div>
         </div>
 <hr>
@@ -77,23 +101,23 @@ const logout = () => {
               <p class="lab_other">За всё время</p>
           </div>
           <div class="lab">
+            <p class="lab_title">Новых</p>
+            <p></p>
+          <p class="lab_other">требуют обработки</p>
+          </div>
+          <div class="lab">
             <p class="lab_title">В работе</p>
             <p></p>
-          <p class="lab_other">активных</p>
+            <p class="lab_other">активных</p>
           </div>
           <div class="lab">
-            <p class="lab_title">Доставлено</p>
+            <p class="lab_title">Закрыто</p>
             <p></p>
-            <p class="lab_other">завершено</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Ожидает</p>
-            <p></p>
-            <p class="lab_other">в обработке</p>
+            <p class="lab_other">за месяц</p>
           </div>
         </div>
 
-        <h3 id="titleorder">Текущие заявки</h3>
+        <h3 id="titleorder">Все заявки</h3>
         <div >
           <table>
             <thead>
@@ -112,6 +136,12 @@ const logout = () => {
                  <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
                <td>{{ order.weight }}</td>
                 <td><span class="status выполняется">{{ order.status }}</span></td>
+                <td>
+                  <div style="display: flex; flex-direction: row; gap: 5px;">
+                    <button class="manbtn">Статус</button>
+                    <button class="manbtn" @click="openTripModal(order)">Назначить</button>  
+                  </div>
+                </td>
               </tr>
             </tbody>
             </table>
@@ -119,6 +149,55 @@ const logout = () => {
         </div>
     </div>
   </div>
+  <div v-if="showTripModal" class="simple-modal">
+  <div class="simple-modal-content">
+    <h3>Новый рейс</h3>
+    <div class="simple-badge">Заявка #{{ currentOrder?.orderId }}</div>
+    
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Водитель</label>
+        <input v-model="tripData.driver" placeholder="Петров А.В">
+      </div>
+      <div class="simple-field">
+        <label>Машина</label>
+        <input v-model="tripData.vehicle" placeholder="Scania R450">
+      </div>
+    </div>
+
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Откуда</label>
+        <input v-model="tripData.from">
+      </div>
+      <div class="simple-field">
+        <label>Куда</label>
+        <input v-model="tripData.to">
+      </div>
+    </div>
+
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Дата отправления</label>
+        <input type="date" v-model="tripData.departureDate">
+      </div>
+      <div class="simple-field">
+        <label>Дата прибытия</label>
+        <input type="date" v-model="tripData.arrivalDate">
+      </div>
+    </div>
+    
+    <div class="simple-field">
+      <label>Длина маршрута (км)</label>
+      <input type="number" v-model="tripData.distance">
+    </div>
+    
+    <div class="simple-buttons">
+      <button class="simple-cancel" @click="showTripModal = false">Отмена</button>
+      <button class="simple-save" @click="saveTrip">Сохранить</button>
+    </div>
+  </div>
+</div>
 </template>
 
 <style>
@@ -385,6 +464,105 @@ a
 {
   text-decoration: none;
 }
+.manbtn
+{
+  width: 200px;
+  height: 40px;
+}
 
+.simple-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.simple-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 500px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.simple-modal-content h3 {
+  font-size: 20px;
+  color: #1D2D50;
+  margin-bottom: 15px;
+}
+
+.simple-badge {
+  background: #f4f7fb;
+  border: 1px solid #d5dae3;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #7a8ba8;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.simple-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.simple-field label {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.simple-field input {
+  padding: 10px 14px;
+  border: 1px solid #d5dae3;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+
+.simple-row {
+  display: flex;
+  gap: 15px;
+}
+
+.simple-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.simple-cancel {
+  padding: 10px 25px;
+  border: 1px solid #d5dae3;
+  border-radius: 8px;
+  background: white;
+  color: #7a8ba8;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.simple-save {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  background: #1A5FBB;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.simple-save:hover {
+  background: #1f6fe0;
+}
 
 </style>
