@@ -45,7 +45,7 @@ const logout = () => {
         </div>
         </div>
         <hr>
-      <a class="logout" click="logout">Выйти из системы</a>
+      <a class="logout" @click="logout">Выйти из системы</a>
     </div>
 
     <div class="content">

@@ -16,7 +16,18 @@ const auth = async () =>
     if (response.ok)
     {
         localStorage.setItem('userId', data.userId)
-      router.push('/neworder')
+        localStorage.setItem('roleId', data.roleId)
+        
+        switch (data.roleId)
+        {
+            case 1: router.push('/admin');
+            break
+            case 2: router.push('/addorder');
+            break
+            case 3: router.push('/driver');
+            break
+            case 4: router.push('/neworder')
+        }
     }
     else
     {

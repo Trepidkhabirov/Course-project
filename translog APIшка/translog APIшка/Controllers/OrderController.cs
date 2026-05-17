@@ -17,7 +17,12 @@
               return BadRequest(ModelState);
           }
           var db = new TransLogCourseContext();
-          var orders = db.Orders.ToList();
+          var orders = db.Orders
+              .Include(o => o.Vehicle)
+              .ThenInclude(v => v.Drivers)
+              .ThenInclude(d => d.User)
+              .Include(o => o.User)
+              .ToList();
           if (orders.Count() == 0)
           {
               return Unauthorized("Заказов нету");

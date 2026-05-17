@@ -1,16 +1,35 @@
 <script setup>
 import router from '@/router';
 import logo from '../assets/images/logo.png'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import order from '../assets/images/order.png'
 import people from '../assets/images/people.png'
 import transport from '../assets/images/transport.png'
 
-
+const orders = ref([])
 const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
+const drivers = ref([])
+const getDriverName = (vehicleId) => {
+  if (!vehicleId) return 'Не назначен'
+  const driver = drivers.value.find(d => d.vehicleId === vehicleId)
+  return driver?.user?.fullName ?? 'Не назначен'
+}
+
+onMounted(async () => 
+{
+  const response = await fetch(
+    `http://localhost:5095/api/Order/GetOrder`)
+    const data = await response.json()
+  orders.value = data
+  console.log(data)
+  const response2 = await fetch('http://localhost:5095/api/Driver/GetDrivers')
+  drivers.value = await response2.json()
+})
+
+
 
 </script>
 
@@ -58,10 +77,9 @@ const logout = () => {
                 <table>
                     <thead>
                         <tr>
-                            <td>№ рейса</td>
                             <td>№ ЗАЯВКИ</td>
                             <td>Водитель</td>
-                            <td>ДАТА</td>
+                            <td>Дата</td>
                             <td>МАРШРУТ</td>
                             <td>Отправление</td>
                             <td>Прибытие</td>
@@ -70,13 +88,19 @@ const logout = () => {
                             <td>СТАТУС</td>
               </tr>
             </thead>
-            <tbody>
-                <td>#1</td>
-                <td>29.04.2026</td>
-        <td>Москва → Уфа</td>
-        <td>1.5</td>
-        <td><span class="status выполняется">Выполняется</span></td>
-            </tbody>
+           <tbody>
+  <tr v-for="order in orders" :key="order.orderId">
+    <td>#{{ order.orderId }}</td>
+    <td>{{ getDriverName(order.vehicleId) }}</td>
+    <td>{{ new Date(order.receivedAt).toLocaleDateString('ru-RU') }}</td>
+    <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
+    <td>{{ order.departureTime || '—' }}</td>
+    <td>{{ order.arrivalTime || '—' }}</td>
+    <td>{{ order.distanceKm || '—' }}</td>
+    <td>{{ order.weight }}</td>
+    <td><span class="status">{{ order.status }}</span></td>
+  </tr>
+</tbody>
         </table>
     </div>
 </div>
@@ -97,8 +121,8 @@ const logout = () => {
 }
 #app { 
   max-width: none ;
-  padding: 0 ;
-  margin: 0 ;
+  padding: 0;
+  margin: 0;
   width: 100% ;
 }
 

@@ -16,6 +16,7 @@ const tripData = ref({
   departureDate: '',
   arrivalDate: ''
 })
+
 const saveTrip = async () =>
 {
   const response = await fetch(
@@ -91,8 +92,28 @@ const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
+const newStatus = ref('')
+const showStatusModal = ref(false)
+const openStatusModal = (order) => {
+  currentOrder.value = order
+  newStatus.value = order.status
+  showStatusModal.value = true
+}
 
-
+const saveStatus = async () =>
+{
+  const response = await fetch(
+     `http://localhost:5095/api/Order/UpdateOrder?OrderId=${currentOrder.value.orderId}`,
+     {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({Status: newStatus.value})
+     }
+  )
+  showStatusModal.value = false
+  const res = await fetch('http://localhost:5095/api/Order/GetOrder')
+  orders.value = await res.json()
+}
 </script>
 <template>
   <div class="layout">
@@ -178,7 +199,7 @@ const logout = () => {
                 <td><span class="status выполняется">{{ order.status }}</span></td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
-                    <button class="manbtn">Статус</button>
+                    <button class="manbtn" @click="openStatusModal(order)">Статус</button>
                     <button class="manbtn" @click="openTripModal(order)">Назначить</button>  
                   </div>
                 </td>
@@ -240,6 +261,23 @@ const logout = () => {
     <div class="simple-buttons">
       <button class="simple-cancel" @click="showTripModal = false">Отмена</button>
       <button class="simple-save" @click="saveTrip">Сохранить</button>
+    </div>
+  </div>
+</div>
+<div v-if="showStatusModal" class="showStatusModal" >
+  <div>
+
+    <p>Изменить статус #1</p>
+    <p>Новый статус</p>
+    <select v-model="newStatus" class="simple-select">
+      <option value="Ожидает">В обработке</option>
+      <option value="Выполняется">Выполняется</option>
+      <option value="Доставлено">Доставлено</option>
+      <option value="Отменено">Отменено</option>
+    </select>
+    <div class="simple-buttons">
+      <button class="simple-cancel" @click="showStatusModal = false">Отмена</button>
+      <button class="simple-save" @click="saveStatus">Сохранить</button>
     </div>
   </div>
 </div>
@@ -618,5 +656,36 @@ a
   width: 100%;
   background: white;
 }
+.showStatusModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
+.showStatusModal > div {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 500px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.showStatusModal p {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #1D2D50;
+}
+
+.showStatusModal select {
+  width: 100% !important;
+  padding: 10px;
+  margin-bottom: 20px;
+}
 </style>
