@@ -13,7 +13,7 @@ const volumem3 = ref('')
 const description = ref('')
 const orders = ref([])
 
-onMounted(async () => {
+onMounted(async () => 
 {
   const userID = parseInt(localStorage.getItem('userId'))
   const response = await fetch(
@@ -21,13 +21,13 @@ onMounted(async () => {
     const data = await response.json()
   orders.value = data
   console.log(data)
-}
 })
+
 const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
-
+const fullname = localStorage.getItem('fullname')
 
 </script>
 <template>
@@ -42,7 +42,7 @@ const logout = () => {
       <div class="user">
         <div class="avatar">ИИ</div>
         <div>
-          <p class="user-name">Иванов И. И.</p>
+          <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Клиент</p>
         </div>
       </div>
@@ -70,37 +70,15 @@ const logout = () => {
       <div class="topbar">Статус заявки</div>
 
       <div class="card">
-        <div class="row">
-          <div class="lab">
-              <p class="lab_title">Всего заявок</p>
-              <p></p>
-              <p class="lab_other">За всё время</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">В работе</p>
-            <p></p>
-          <p class="lab_other">активных</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Доставлено</p>
-            <p></p>
-            <p class="lab_other">завершено</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Ожидает</p>
-            <p></p>
-            <p class="lab_other">в обработке</p>
-          </div>
-        </div>
-
-        <h3 id="titleorder">Текущие заявки</h3>
-        <div >
+        <h2 id="titleorder" style="margin-top: -30px;" >Текущие заявки</h2>
+        <div style="overflow-y: auto; max-height: 600px;">
           <table>
             <thead>
               <tr>
                 <td>№ ЗАЯВКИ</td>
                 <td>ДАТА</td>
                 <td>МАРШРУТ</td>
+                <td>Отправление → Прибытие</td>
                 <td>ГРУЗ (Т)</td>
                 <td>СТАТУС</td>
               </tr>
@@ -110,6 +88,7 @@ const logout = () => {
                 <td>#{{ order.orderId }}</td>
                <td>{{ new Date(order.receivedAt).toLocaleDateString('ru-RU') }}</td>
                  <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
+                 <td>{{ order.departureTime ? new Date(order.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте' }} → {{ order.arrivalTime ? new Date(order.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
                <td>{{ order.weight }}</td>
                 <td><span class="status выполняется">{{ order.status }}</span></td>
               </tr>
@@ -121,11 +100,8 @@ const logout = () => {
   </div>
 </template>
 
-<style>
-#titleorder
-{
-  padding-top: 30px;
-}
+<style scoped>
+
  hr{
     width: 340px;
  }
@@ -141,13 +117,13 @@ thead tr {
 th {
   text-align: left;
   padding: 10px 15px;
-  font-size: 12px;
+  font-size: 16px;
   color: #7a8ba8;
   font-weight: 600;
 }
 td {
   padding: 15px;
-  font-size: 14px;
+  font-size: 16px ;
   font-weight: bold;
   color: #1D2D50;
 }

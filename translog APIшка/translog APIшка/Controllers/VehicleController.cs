@@ -16,7 +16,7 @@ public class VehicleController : ControllerBase
             return BadRequest(ModelState);
         }
         var db = new TransLogCourseContext();
-        var vehicle = db.Vehicles.ToList();
+        var vehicle = db.Vehicles.Include(v => v.Drivers).ThenInclude(v => v.User).ToList();
         if (vehicle.Count == 0)
         {
             return Unauthorized("Машин нету");

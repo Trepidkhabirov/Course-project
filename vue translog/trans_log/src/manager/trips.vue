@@ -30,7 +30,7 @@ onMounted(async () =>
 })
 
 
-
+const fullname = localStorage.getItem('fullname')
 </script>
 
 <template>
@@ -45,7 +45,7 @@ onMounted(async () =>
       <div class="user">
         <div class="avatar">ИИ</div>
         <div>
-          <p class="user-name">Иванов И. И.</p>
+          <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Менеджер</p>
         </div>
       </div>
@@ -61,7 +61,7 @@ onMounted(async () =>
         </div >
         <div class="podmenu">
             <img :src="people">
-            <a class="menu-item">Водители</a>
+            <a class="menu-item" @click="router.push('/drivers')">Водители</a>
         </div>
         </div>
         <hr>
@@ -72,8 +72,8 @@ onMounted(async () =>
       
       <div class="topbar">Список рейсов</div>
         <div class="card">
-            <h3>Список рейсов</h3>
-            <div>
+            <h2>Список рейсов</h2>
+            <div style="overflow-y: auto; max-height: 700px;">
                 <table>
                     <thead>
                         <tr>
@@ -314,6 +314,16 @@ body, html {
 h3 
 {
     color: black;
+}
+.status {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.выполняется {
+  background: #2ecc71;
+  color: white;
 }
 
 </style>

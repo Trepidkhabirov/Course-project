@@ -87,7 +87,7 @@
                   o.ArrivalTime = model.ArrivalTime;
                   o.VehicleId = model.VehicleId;
                   o.DistanceKm = model.Distance_km;
-
+  
               }
               db.SaveChanges();
               return Ok(new { message = "Заказ обновлен!", order});

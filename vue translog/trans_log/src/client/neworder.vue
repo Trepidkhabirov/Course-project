@@ -6,6 +6,8 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
+const success = ref('')
+
 const departurepoint = ref('')
 const arrivalpoint = ref('')
 const weight = ref('')
@@ -33,7 +35,21 @@ const order = async () =>
   )
   const data = await response.json()
   console.log(data)
-}
+  if (response.ok)
+  {
+    departurepoint.value = ''
+    arrivalpoint.value = ''
+    weight.value = ''
+    volumem3.value = ''
+    description.value = ''
+    success.value = data.message
+     setTimeout(() => {
+      success.value = ''
+}, 10000)
+
+  }
+  }
+const fullname = localStorage.getItem('fullname')
 const logout = () => {
   localStorage.clear()
   router.push('/authorization')
@@ -54,7 +70,7 @@ const logout = () => {
       <div class="user">
         <div class="avatar">ИИ</div>
         <div>
-          <p class="user-name">Иванов И. И.</p>
+          <p class="user-name">{{ fullname || 'Нет'}}</p>
           <p class="user-role">Клиент</p>
         </div>
       </div>
@@ -86,7 +102,7 @@ const logout = () => {
       <div class="card">
         <p class="card-title">Оформление заявки на грузоперевозку</p>
 
-        <h3>МАРШРУТ</h3>
+        <h2>МАРШРУТ</h2>
         
         <div class="row">
           <div class="field">
@@ -99,7 +115,7 @@ const logout = () => {
           </div>
         </div>
 
-        <h3>ПАРАМЕТРЫ ГРУЗА</h3>
+        <h2>ПАРАМЕТРЫ ГРУЗА</h2>
         <div class="row">
           <div class="field">
             <label>Вес груза (тонн)</label>
@@ -115,7 +131,7 @@ const logout = () => {
           <label>Описание груза (необязательно)</label>
           <textarea rows="5" v-model="description"></textarea>
         </div>
-        
+        <p v-if="success" style="color: green; font-size: 20px;"> {{ success }}</p>
         <button class="submit">Подать заявку</button>
       </div>
     </div>
@@ -248,7 +264,7 @@ body, html {
 }
 .logout {
   padding: 15px 25px;
-  font-size: 12px;
+  font-size: 14px;
   color: #6b7590;
   cursor: pointer;
 }
@@ -273,7 +289,7 @@ body, html {
   margin-bottom: 15px;
 }
 .field label {
-  font-size: 12px;
+  font-size: 20px !important;
   color: #777;
   margin-bottom: 6px;
 }
@@ -283,7 +299,7 @@ body, html {
   border: 1px solid #d5dae3;
   border-radius: 4px;
   background: #f4f7fb;      
-  font-size: 14px;
+  font-size: 22px;
   outline: none;            
   font-family: inherit;
 }
@@ -295,7 +311,7 @@ body, html {
   border: none;
   padding: 12px 30px;
   border-radius: 20px !important;
-  font-size: 18px;
+  font-size: 20px !important;
   cursor: pointer;
   float: right;     
 }      
@@ -327,13 +343,20 @@ body, html {
 
 .card {
   background: white;
-  margin: 30px 40px;
+  margin: 20px 40px;
   padding: 30px;
   border-radius: 8px;
+  max-width: 100%;
+  
 }
-h3 
+h2
 {
     color: black;
+}
+form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 </style>

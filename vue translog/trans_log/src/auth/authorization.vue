@@ -17,6 +17,7 @@ const auth = async () =>
     {
         localStorage.setItem('userId', data.userId)
         localStorage.setItem('roleId', data.roleId)
+        localStorage.setItem('fullname', data.fullname)
         
         switch (data.roleId)
         {

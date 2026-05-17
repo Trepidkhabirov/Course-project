@@ -114,6 +114,7 @@ const saveStatus = async () =>
   const res = await fetch('http://localhost:5095/api/Order/GetOrder')
   orders.value = await res.json()
 }
+const fullname = localStorage.getItem('fullname')
 </script>
 <template>
   <div class="layout">
@@ -127,7 +128,7 @@ const saveStatus = async () =>
       <div class="user">
         <div class="avatar">ИИ</div>
         <div>
-          <p class="user-name">Иванов И. И.</p>
+          <p class="user-name">{{ fullname }}</p>
           <p class="user-role">Менеджер</p>
         </div>
       </div>
@@ -179,7 +180,7 @@ const saveStatus = async () =>
         </div>
 
         <h3 id="titleorder">Все заявки</h3>
-        <div >
+        <div style="overflow-y: auto; max-height: 500px;" >
           <table>
             <thead>
               <tr>
@@ -212,7 +213,7 @@ const saveStatus = async () =>
   </div>
   <div v-if="showTripModal" class="simple-modal">
   <div class="simple-modal-content">
-    <h3>Новый рейс</h3>
+    <h2>Новый рейс</h2>
     <div class="simple-badge">Заявка #{{ currentOrder?.orderId }}</div>
     
     <div class="simple-row">
@@ -303,13 +304,13 @@ thead tr {
 th {
   text-align: left;
   padding: 10px 15px;
-  font-size: 12px;
+  font-size: 16px;
   color: #7a8ba8;
   font-weight: 600;
 }
 td {
   padding: 15px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   color: #1D2D50;
 }
