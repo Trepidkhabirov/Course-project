@@ -335,7 +335,7 @@ td {
 .lab
 {
   display: flex;
-  width: 330px;
+  width: 300px !important;
   height: 180px;
   border-radius: 15px;
   border: solid #C8D3E5 2px;

@@ -195,9 +195,6 @@ public partial class TransLogCourseContext : DbContext
             entity.Property(e => e.VehicleId)
                 .HasColumnType("int(11)")
                 .HasColumnName("vehicle_id");
-            entity.Property(e => e.BodyType)
-                .HasMaxLength(50)
-                .HasColumnName("body_type");
             entity.Property(e => e.Brand)
                 .HasMaxLength(50)
                 .HasColumnName("brand");

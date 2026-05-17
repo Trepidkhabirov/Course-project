@@ -43,7 +43,6 @@ public class VehicleController : ControllerBase
             PayloadKg = model.PayloadKg,
             VolumeM3 = model.VolumeM3,
             VehicleId = model.VehicleId,
-            BodyType = model.BodyType
         };
         db.Vehicles.Add(newVehicle);
         db.SaveChanges();
@@ -77,7 +76,6 @@ public class VehicleController : ControllerBase
                 v.PayloadKg = model.PayloadKg;
                 v.VolumeM3 = model.VolumeM3;
                 v.VehicleId = model.VehicleId;
-                v.BodyType = model.BodyType;
             }
             db.SaveChanges();
             return Ok(new {message = "Машина обновлена!",  vehicle});
@@ -99,5 +97,4 @@ public class VehicleModel
 
     public decimal? VolumeM3 { get; set; }
 
-    public string? BodyType { get; set; }
 }

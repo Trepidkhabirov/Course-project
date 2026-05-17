@@ -75,7 +75,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
     <div class="content">
       
       <div class="topbar">История заявок</div>
-        <div class="card">
+        <div class="cardhistory">
   <div class="row">
           <div class="lab">
               <p class="lab_title">Всего заявок</p>
@@ -99,7 +99,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
           </div>
         </div>
             <h2 style="margin-top: 30px;">История всех заявок</h2>
-            <div style="overflow-y: auto; max-height: 460px;">
+            <div style="overflow-y: auto; max-height: 460px; ">
                 <table>
                     <thead>
                         <tr>
@@ -128,7 +128,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
 </div>
 </template>
 
-<style >
+<style>
 
 #titleorder
 {
@@ -173,7 +173,7 @@ td {
 .lab
 {
   display: flex;
-  width: 330px;
+  width: 310px;
   height: 180px;
   border-radius: 15px;
   border: solid #C8D3E5 2px;
@@ -321,7 +321,7 @@ body, html {
 
 .row {
   display: flex;           
-  gap: 20px;               
+  gap: 20px;            
 }
 
 
@@ -382,7 +382,7 @@ body, html {
   border-bottom: 1px solid #ddd;
 }
 
-.card {
+.cardhistory {
   background: white;
   margin: 30px 40px;
   padding: 30px;

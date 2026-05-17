@@ -17,8 +17,6 @@ public partial class Vehicle
 
     public decimal? VolumeM3 { get; set; }
 
-    public string? BodyType { get; set; }
-
     public int? VehicleTypeId { get; set; }
 
     public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();

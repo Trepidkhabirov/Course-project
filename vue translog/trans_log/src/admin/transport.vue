@@ -9,15 +9,15 @@ import transport from '../assets/images/transport.png'
 const showTripModal = ref(false)
 const currentOrder = ref(null)
 
-const users = ref([])
+const transports = ref([])
 
 
 const fullname = localStorage.getItem('fullname')
 onMounted(async () => 
 {
-    const response = await fetch(`http://localhost:5095/api/User/GetUser`)
+    const response = await fetch(`http://localhost:5095/api/Vehicle/GetTransport`)
     const data = await response.json()
-    users.value = data
+    transports.value = data
 })
 
 
@@ -43,7 +43,7 @@ const logout = () => {
       </div>
 
       <div class="menu">
-        <div class="podmenu_active">
+        <div class="podmenu" @click="$router.push('/usersList')">
             <img :src="people"> 
             <a class="menu-item" > Пользователи</a>
         </div>
@@ -51,7 +51,7 @@ const logout = () => {
             <img :src="spravka">
             <a class="menu-item" >Справочники</a>
         </div >
-        <div class="podmenu" @click="$router.push('/transport')">
+        <div class="podmenu_active">
             <img :src="transport">
             <a class="menu-item">Транспорт</a>
         </div>
@@ -62,28 +62,30 @@ const logout = () => {
 
     <div class="content">
       
-      <div class="topbar">Пользователи</div>
+      <div class="topbar">Транспорт</div>
 
       <div class="card" >
-        <h3 id="titleorder" style="margin-top: -30px;">Все пользователи</h3>
-        <div style="overflow-y: auto; max-height: 610px; width: 100%;" >
+        <h2 id="titleorder" style="margin-top: -30px;">Транспортные средства</h2>
+        <div style="overflow-y: auto; max-height: 680px;" >
           <table>
             <thead>
               <tr>
-                <td>ФИО</td>
-                <td>Логин</td>
-                <td>Номер телефона</td>
+                <td>Гос. Номер.</td>
+                <td>Марка</td>
+                <td>Класс</td>
+                <td>Груз</td>
+                <td>Цена за 1 км</td>
+                <td>Водитель</td>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="u in users" :key="u.userId">
-                <td>{{ u.fullName }}</td>
-               <td>{{ u.username}}</td>
-                 <td>{{ u.numberphone }}</td>
+              <tr v-for="t in transports" :key="t.vehicleId">
+                <td>{{ t.licensePlate }}</td>
+               <td>{{ t.brand}} {{ t.model }}</td>
+                 <td>{{ t.vehicleTypeId }}</td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
                     <button class="manbtn" @click="openStatusModal(order)">Изменить</button>
-                    <button class="manbtn" @click="openTripModal(order)" style="background-color: red;">Удалить</button>  
                   </div>
                 </td>
               </tr>
@@ -166,7 +168,7 @@ const logout = () => {
 </div>
 </template>
 
-<style>
+<style >
 #titleorder
 {
   padding-top: 30px;
@@ -421,8 +423,11 @@ body, html {
 
 .card {
   background: white;
+  display: flex;
+  flex-direction: column;
   margin: 30px 40px;
   padding: 30px;
+  height: 100%;
   border-radius: 8px;
 }
 

@@ -9,6 +9,7 @@ import Drivers from '@/manager/drivers.vue'
 import Trips from '@/manager/trips.vue'
 import UsersList from '@/admin/usersList.vue'
 import Spavki from '@/admin/spavki.vue'
+import Transport from '@/admin/transport.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -61,6 +62,11 @@ const router = createRouter({
       path: '/spavki',
       name: 'spavki',
       component: Spavki
+    },
+    {
+      path: '/transport',
+      name: 'transport',
+      component: Transport
     },
     {
       path: '/about',

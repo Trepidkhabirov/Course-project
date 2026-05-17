@@ -50,11 +50,11 @@ const logout = () => {
             <img :src="people"> 
             <a class="menu-item" > Пользователи</a>
         </div>
-        <div class="podmenu_active" @click="$router.push('/trips')" >
+        <div class="podmenu_active" >
             <img :src="spravka">
             <a class="menu-item" >Справочники</a>
         </div >
-        <div class="podmenu" @click="$router.push('/drivers')">
+        <div class="podmenu" @click="$router.push('/transport')">
             <img :src="transport">
             <a class="menu-item">Транспорт</a>
         </div>
@@ -73,7 +73,7 @@ const logout = () => {
 
                 <div class="title_type">
                   <p style="font-weight: bold; font-size: 22px;">{{ v.name }}</p>
-                  <p style="font-size: 20px;">Стоимость за 1 км пути: {{ v.pricePerKm }}</p>
+                  <p style="font-size: 16px; text-wrap: nowrap;">Стоимость за 1 км пути: {{ v.pricePerKm }}</p>
                 </div>
                 <button class=""simplesave style="width: 200px; margin-left: 170px; margin-top: 20px;">Изменить</button>
               </div>
@@ -88,7 +88,7 @@ const logout = () => {
                 </div>
               </div>
             </div>
-            <div class="typeauto" style="margin-left: 60px; height: 360px; ;">
+            <div class="typeauto" style="margin-left: 70px; height: 320px; ;">
               <h2>Роли пользователей</h2>
               <div class="title_row" v-for="r in roles" :key="r.roleId">
   
@@ -112,8 +112,8 @@ const logout = () => {
 }
 .statuses p 
 {
-    width: 220px;
-  height: 50px;
+    width: 200px;
+  height: 40px;
   font-weight: bold;
  display: flex;
   align-items: center;
@@ -137,9 +137,9 @@ const logout = () => {
   border-radius: 15px;
   padding: 20px 25px;
   margin-left: 30px;
-  margin-top: 30px;
-  width: 700px;
-  height: 400px;
+  margin-top: 30px ;
+  width: 700px !important;
+  height: 380px !important;
 }
 
 .typeauto h2 {

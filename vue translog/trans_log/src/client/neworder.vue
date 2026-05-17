@@ -151,7 +151,7 @@ const logout = () => {
   </div>
 </template>
 
-<style>
+<style >
 
  hr{
     width: 340px;
