@@ -26,6 +26,8 @@ public partial class TransLogCourseContext : DbContext
 
     public virtual DbSet<Vehicle> Vehicles { get; set; }
 
+    public virtual DbSet<VehicleType> VehicleTypes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySql("server=localhost;user=root;database=trans_log_course", Microsoft.EntityFrameworkCore.ServerVersion.Parse("11.8.6-mariadb"));
@@ -188,6 +190,8 @@ public partial class TransLogCourseContext : DbContext
 
             entity.ToTable("vehicles");
 
+            entity.HasIndex(e => e.VehicleTypeId, "vehicle_type_id");
+
             entity.Property(e => e.VehicleId)
                 .HasColumnType("int(11)")
                 .HasColumnName("vehicle_id");
@@ -206,9 +210,36 @@ public partial class TransLogCourseContext : DbContext
             entity.Property(e => e.PayloadKg)
                 .HasPrecision(10, 2)
                 .HasColumnName("payload_kg");
+            entity.Property(e => e.VehicleTypeId)
+                .HasColumnType("int(11)")
+                .HasColumnName("vehicle_type_id");
             entity.Property(e => e.VolumeM3)
                 .HasPrecision(8, 2)
                 .HasColumnName("volume_m3");
+
+            entity.HasOne(d => d.VehicleType).WithMany(p => p.Vehicles)
+                .HasForeignKey(d => d.VehicleTypeId)
+                .HasConstraintName("vehicles_ibfk_1");
+        });
+
+        modelBuilder.Entity<VehicleType>(entity =>
+        {
+            entity.HasKey(e => e.TypeId).HasName("PRIMARY");
+
+            entity.ToTable("vehicle_types");
+
+            entity.Property(e => e.TypeId)
+                .HasColumnType("int(11)")
+                .HasColumnName("type_id");
+            entity.Property(e => e.Description)
+                .HasMaxLength(200)
+                .HasColumnName("description");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+            entity.Property(e => e.PricePerKm)
+                .HasPrecision(10, 2)
+                .HasColumnName("price_per_km");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -7,6 +7,8 @@ import Historyorder from '@/client/historyorder.vue'
 import Addorder from '@/manager/addorder.vue'
 import Drivers from '@/manager/drivers.vue'
 import Trips from '@/manager/trips.vue'
+import UsersList from '@/admin/usersList.vue'
+import Spavki from '@/admin/spavki.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -49,6 +51,16 @@ const router = createRouter({
       path: '/trips',
       name: 'trips',
       component: Trips 
+    },
+    {
+      path: '/usersList',
+      name: 'usersList',
+      component: UsersList
+    },
+    {
+      path: '/spavki',
+      name: 'spavki',
+      component: Spavki
     },
     {
       path: '/about',

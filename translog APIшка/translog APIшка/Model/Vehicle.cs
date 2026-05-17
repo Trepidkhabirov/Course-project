@@ -19,7 +19,11 @@ public partial class Vehicle
 
     public string? BodyType { get; set; }
 
+    public int? VehicleTypeId { get; set; }
+
     public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual VehicleType? VehicleType { get; set; }
 }

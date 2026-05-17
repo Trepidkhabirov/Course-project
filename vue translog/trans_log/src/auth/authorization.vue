@@ -21,13 +21,14 @@ const auth = async () =>
         
         switch (data.roleId)
         {
-            case 1: router.push('/admin');
+            case 1: router.push('/usersList');
             break
             case 2: router.push('/addorder');
             break
             case 3: router.push('/driver');
             break
             case 4: router.push('/neworder')
+            break
         }
     }
     else

@@ -84,31 +84,19 @@
          );
      }
      [HttpGet("GetUser")]
-     public IActionResult GetUser(string login)
+     public IActionResult GetUser()
      {
          var db = new TransLogCourseContext();
          if (!ModelState.IsValid)
              return BadRequest(ModelState);
-         var users = db.Users.FromSqlRaw($"select * from users where username = '{login}'").ToList();
+         var users = db.Users.ToList();
          if (users.Count() == 0)
          {
-             return BadRequest(new { message = "Такого пользователя нету!" });
+             return BadRequest(new { message = "пользователей нету!" });
          }
          else
          {
-             foreach (var user in users)
-             {
-                 return Ok(new
-                 {
-                     message = "Пользователь",
-                     userId = user.UserId,
-                     login = user.Username,
-                     roleId = user.RoleId,
-                     fullname = user.FullName,
-                     numberphone = user.Numberphone,
-                     isActive = user.IsActive
-                 });
-             }
+                 return Ok(users);
          }
          return Unauthorized(new { message = "Ошибка" });
      }

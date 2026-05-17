@@ -2,127 +2,29 @@
 import router from '@/router';
 import logo from '../assets/images/logo.png'
 import { ref, computed, onMounted } from 'vue'
-import order from '../assets/images/order.png'
-import people from '../assets/images/people.png'
+import people from '../assets/images/users.png'
+import spravka from '../assets/images/spavka.png'
 import transport from '../assets/images/transport.png'
 
 const showTripModal = ref(false)
 const currentOrder = ref(null)
-const tripData = ref({
-  vehicleId: null,
-  from: '',
-  to: '',
-  distance_km: '',
-  departureDate: '',
-  arrivalDate: ''
-})
 
-const saveTrip = async () =>
+const users = ref([])
+
+
+const fullname = localStorage.getItem('fullname')
+onMounted(async () => 
 {
-  const response = await fetch(
-    `http://localhost:5095/api/Order/UpdateOrder?OrderId=${currentOrder.value.orderId}`,
-    {
-      method: "PUT",
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        Status: 'Выполняется',
-        DepartureTime: tripData.value.departureDate,
-        ArrivalTime: tripData.value.arrivalDate,
-        vehicleId: tripData.value.vehicleId,
-        distance_km: tripData.value.distance_km
-      })
-    }
-  )
-  const data = await response.json()
-  console.log(data)
-  showTripModal.value = false
-  const res = await fetch('http://localhost:5095/api/Order/GetOrder')
-  orders.value = await res.json()
-}
-
-const openTripModal = (order) => {
-  currentOrder.value = order
-  tripData.value = {
-    vehicleId: order.vehicleId || null,
-    from: order.departurePoint,
-    to: order.arrivalPoint,
-    distance_km: order.distanceKm  || '',
-     departureDate: order.departureTime || '',
-    arrivalDate: order.arrivalTime || ''
-    
-  }
-  console.log('Полный объект заказа:', order)
-  console.log('distance_km:', order.distance_km)
-  console.log('DistanceKm:', order.distanceKm)
-  showTripModal.value = true
-}
-const selectedDriverName = computed(() => {
-  if (!tripData.value.vehicleId) return ''
-  const driver = drivers.value.find(d => d.vehicleId === tripData.value.vehicleId)
-  if (!driver || !driver.user) return 'Водитель не привязан'
-  return driver.user.fullName
-})
-
-const departurepoint = ref('')
-const arrivalpoint = ref('')
-const weight = ref('')
-const volumem3 = ref('')
-const description = ref('')
-const orders = ref([])
-const drivers = ref([])
-const vehicles = ref([])  
-onMounted(async () => {
-{
-  const userID = parseInt(localStorage.getItem('userId'))
-  const response = await fetch(
-    `http://localhost:5095/api/Order/GetOrder`)
+    const response = await fetch(`http://localhost:5095/api/User/GetUser`)
     const data = await response.json()
-  orders.value = data
-  console.log(data)
-  const response2 = await fetch('http://localhost:5095/api/Driver/GetDrivers')
-  drivers.value = await response2.json()
-console.log('drivers:', drivers.value)
-const response3 = await fetch('http://localhost:5095/api/Vehicle/GetTransport')
-  vehicles.value = await response3.json()
-  console.log('vehicles:', vehicles.value)
-  
-}
+    users.value = data
 })
+
+
 const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
-const newStatus = ref('')
-const showStatusModal = ref(false)
-const openStatusModal = (order) => {
-  currentOrder.value = order
-  newStatus.value = order.status
-  showStatusModal.value = true
-}
-
-const saveStatus = async () =>
-{
-  const response = await fetch(
-     `http://localhost:5095/api/Order/UpdateOrder?OrderId=${currentOrder.value.orderId}`,
-     {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({Status: newStatus.value})
-     }
-  )
-  showStatusModal.value = false
-  const res = await fetch('http://localhost:5095/api/Order/GetOrder')
-  orders.value = await res.json()
-}
-const fullname = localStorage.getItem('fullname')
-
-
-const totalOrders = computed( () => orders.value.length)
-const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
-const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
-const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
-
-
 </script>
 <template>
   <div class="layout">
@@ -136,22 +38,22 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
         <div class="avatar">ИИ</div>
         <div>
           <p class="user-name">{{ fullname }}</p>
-          <p class="user-role">Менеджер</p>
+          <p class="user-role">Администратор</p>
         </div>
       </div>
 
       <div class="menu">
         <div class="podmenu_active">
-            <img :src="order"> 
-            <a class="menu-item" > Заявки</a>
+            <img :src="people"> 
+            <a class="menu-item" > Пользователи</a>
         </div>
-        <div class="podmenu" @click="$router.push('/trips')" >
-            <img :src="transport">
-            <a class="menu-item" >Рейсы</a>
+        <div class="podmenu" @click="$router.push('/spavki')" >
+            <img :src="spravka">
+            <a class="menu-item" >Справочники</a>
         </div >
         <div class="podmenu" @click="$router.push('/drivers')">
-            <img :src="people">
-            <a class="menu-item">Водители </a>
+            <img :src="transport">
+            <a class="menu-item">Транспорт</a>
         </div>
         </div>
 <hr>
@@ -160,55 +62,28 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
 
     <div class="content">
       
-      <div class="topbar">Статус заявки</div>
+      <div class="topbar">Пользователи</div>
 
       <div class="card">
-        <div class="row">
-          <div class="lab">
-              <p class="lab_title">Всего заявок</p>
-              <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalOrders }}</p>
-              <p class="lab_other">За всё время</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Новых</p>
-            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalwait }}</p>
-          <p class="lab_other">требуют обработки</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">В работе</p>
-            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalwork }}</p>
-            <p class="lab_other">активных</p>
-          </div>
-          <div class="lab">
-            <p class="lab_title">Закрыто</p>
-            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalend }}</p>
-            <p class="lab_other">За всё время</p>
-          </div>
-        </div>
-
-        <h3 id="titleorder">Все заявки</h3>
-        <div style="overflow-y: auto; max-height: 480px;" >
+        <h3 id="titleorder" style="margin-top: -30px;">Все пользователи</h3>
+        <div style="overflow-y: auto; max-height: 680px;" >
           <table>
             <thead>
               <tr>
-                <td>№ ЗАЯВКИ</td>
-                <td>ДАТА</td>
-                <td>МАРШРУТ</td>
-                <td>ГРУЗ (Т)</td>
-                <td>СТАТУС</td>
+                <td>ФИО</td>
+                <td>Логин</td>
+                <td>Номер телефона</td>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="order in orders" :key="order.orderId">
-                <td>#{{ order.orderId }}</td>
-               <td>{{ new Date(order.receivedAt).toLocaleDateString('ru-RU') }}</td>
-                 <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
-               <td>{{ order.weight }}</td>
-                <td><span class="status выполняется">{{ order.status }}</span></td>
+              <tr v-for="u in users" :key="u.userId">
+                <td>{{ u.fullName }}</td>
+               <td>{{ u.username}}</td>
+                 <td>{{ u.numberphone }}</td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
-                    <button class="manbtn" @click="openStatusModal(order)">Статус</button>
-                    <button class="manbtn" @click="openTripModal(order)">Назначить</button>  
+                    <button class="manbtn" @click="openStatusModal(order)">Изменить</button>
+                    <button class="manbtn" @click="openTripModal(order)" style="background-color: red;">Удалить</button>  
                   </div>
                 </td>
               </tr>
