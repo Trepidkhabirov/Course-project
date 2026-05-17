@@ -92,7 +92,7 @@ onMounted(async () => {
           </div>
         </div>
             <h2 style="margin-top: 30px;">История всех заявок</h2>
-            <div style="overflow-y: auto; max-height: 500px;">
+            <div style="overflow-y: auto; max-height: 460px;">
                 <table>
                     <thead>
                         <tr>

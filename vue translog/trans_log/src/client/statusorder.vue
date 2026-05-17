@@ -29,6 +29,22 @@ const logout = () => {
 }
 const fullname = localStorage.getItem('fullname')
 
+const orderID = ref('')
+const cancel = async (orderId) =>
+{
+  const response = await fetch(`http://localhost:5095/api/Order/UpdateOrder?OrderId=${orderId}`,
+  {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json'},
+    body: JSON.stringify( { Status: 'Отменено'} )
+})
+  const userID = parseInt(localStorage.getItem('userId'))
+  const res = await fetch(`http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
+  orders.value = await res.json()
+ 
+  
+}
+
 </script>
 <template>
   <div class="layout">
@@ -91,6 +107,12 @@ const fullname = localStorage.getItem('fullname')
                  <td>{{ order.departureTime ? new Date(order.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте' }} → {{ order.arrivalTime ? new Date(order.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
                <td>{{ order.weight }}</td>
                 <td><span class="status выполняется">{{ order.status }}</span></td>
+                <td> <button 
+    v-if="order.status === 'Ожидает'" 
+    @click="cancel(order.orderId)"
+    style="width: 150px; font-size: 14px; height: 40px; background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
+    Отменить
+  </button></td>
               </tr>
             </tbody>
             </table>

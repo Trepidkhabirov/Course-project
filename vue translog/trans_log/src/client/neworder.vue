@@ -6,16 +6,27 @@ import plus from '../assets/images/plus.png'
 import time from '../assets/images/time.png'
 import history from '../assets/images/history.png'
 
-const success = ref('')
+const messageAlert = ref('')
 
 const departurepoint = ref('')
 const arrivalpoint = ref('')
 const weight = ref('')
 const volumem3 = ref('')
 const description = ref('')
+const colormessage = ref('')
 
 const order = async () =>
 {
+  if (!departurepoint.value || !arrivalpoint.value || !weight.value || !volumem3.value)
+{ 
+    colormessage.value = 'red'
+    messageAlert.value = 'Заполните все поля'
+      setTimeout(() => {
+      messageAlert.value = ''
+}, 5000)
+return
+}
+
   const response = await fetch(
     'http://localhost:5095/api/Order/CreateOrder',
     {
@@ -42,9 +53,10 @@ const order = async () =>
     weight.value = ''
     volumem3.value = ''
     description.value = ''
-    success.value = data.message
+    colormessage.value = 'green'
+    messageAlert.value = data.message
      setTimeout(() => {
-      success.value = ''
+      messageAlert.value = ''
 }, 10000)
 
   }
@@ -131,7 +143,7 @@ const logout = () => {
           <label>Описание груза (необязательно)</label>
           <textarea rows="5" v-model="description"></textarea>
         </div>
-        <p v-if="success" style="color: green; font-size: 20px;"> {{ success }}</p>
+        <p v-if="messageAlert" :style="{color: colormessage, fontSize:   '20px' }"> {{ messageAlert }}</p>
         <button class="submit">Подать заявку</button>
       </div>
     </div>
