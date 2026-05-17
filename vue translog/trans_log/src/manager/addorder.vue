@@ -115,6 +115,14 @@ const saveStatus = async () =>
   orders.value = await res.json()
 }
 const fullname = localStorage.getItem('fullname')
+
+
+const totalOrders = computed( () => orders.value.length)
+const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
+const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+
+
 </script>
 <template>
   <div class="layout">
@@ -159,28 +167,28 @@ const fullname = localStorage.getItem('fullname')
         <div class="row">
           <div class="lab">
               <p class="lab_title">Всего заявок</p>
-              <p></p>
+              <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalOrders }}</p>
               <p class="lab_other">За всё время</p>
           </div>
           <div class="lab">
             <p class="lab_title">Новых</p>
-            <p></p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalwait }}</p>
           <p class="lab_other">требуют обработки</p>
           </div>
           <div class="lab">
             <p class="lab_title">В работе</p>
-            <p></p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalwork }}</p>
             <p class="lab_other">активных</p>
           </div>
           <div class="lab">
             <p class="lab_title">Закрыто</p>
-            <p></p>
-            <p class="lab_other">за месяц</p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; ">{{ totalend }}</p>
+            <p class="lab_other">За всё время</p>
           </div>
         </div>
 
         <h3 id="titleorder">Все заявки</h3>
-        <div style="overflow-y: auto; max-height: 500px;" >
+        <div style="overflow-y: auto; max-height: 480px;" >
           <table>
             <thead>
               <tr>

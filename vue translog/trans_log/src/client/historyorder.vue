@@ -28,6 +28,13 @@ onMounted(async () => {
   console.log(data)
 }
 })
+
+const totalOrders = computed( () => orders.value.length)
+const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
+const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+
+
 </script>
 
 <template>
@@ -72,22 +79,22 @@ onMounted(async () => {
   <div class="row">
           <div class="lab">
               <p class="lab_title">Всего заявок</p>
-              <p></p>
+              <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; " >{{ totalOrders }}</p>
               <p class="lab_other">За всё время</p>
           </div>
           <div class="lab">
             <p class="lab_title">В работе</p>
-            <p></p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; "> {{ totalwork }}</p>
           <p class="lab_other">активных</p>
           </div>
           <div class="lab">
             <p class="lab_title">Доставлено</p>
-            <p></p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; "> {{ totalend }}</p>
             <p class="lab_other">завершено</p>
           </div>
           <div class="lab">
             <p class="lab_title">Ожидает</p>
-            <p></p>
+            <p style="color: black; font-size: 34px; margin-bottom: -50px; margin-left: 25px; "> {{ totalwait }}</p>
             <p class="lab_other">в обработке</p>
           </div>
         </div>
@@ -121,7 +128,7 @@ onMounted(async () => {
 </div>
 </template>
 
-<style scoped>
+<style >
 
 #titleorder
 {

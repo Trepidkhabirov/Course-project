@@ -122,7 +122,7 @@ const cancel = async (orderId) =>
   </div>
 </template>
 
-<style scoped>
+<style >
 
  hr{
     width: 340px;
