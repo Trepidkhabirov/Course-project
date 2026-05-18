@@ -73,7 +73,7 @@ const fullname = localStorage.getItem('fullname')
       <div class="topbar">Список рейсов</div>
         <div class="card">
             <h2>Список рейсов</h2>
-            <div style="overflow-y: auto; max-height: 680px;">
+            <div style="overflow-y: auto; max-height: 650px;">
                 <table>
                     <thead>
                         <tr>

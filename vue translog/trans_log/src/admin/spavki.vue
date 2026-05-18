@@ -45,8 +45,8 @@ const logout = () => {
         </div>
       </div>
 
-      <div class="menu"  @click="$router.push('/usersList')">
-        <div class="podmenu">
+      <div class="menu">
+        <div class="podmenu"  @click="$router.push('/usersList')">
             <img :src="people"> 
             <a class="menu-item" > Пользователи</a>
         </div>

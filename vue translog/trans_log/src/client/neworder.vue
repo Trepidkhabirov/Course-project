@@ -118,11 +118,11 @@ const logout = () => {
         
         <div class="row">
           <div class="field">
-            <label>Пункт отправления</label>
-            <input type="text" v-model="departurepoint" placeholder="Москва">
+            <label style="font-size: 18px;">Пункт отправления</label>
+            <input  type="text" v-model="departurepoint" placeholder="Москва">
           </div>
           <div class="field">
-            <label>Пункт прибытия</label>
+            <label style="font-size: 18px;" >Пункт прибытия</label>
             <input type="text" v-model="arrivalpoint" placeholder="Уфа">
           </div>
         </div>
@@ -130,48 +130,44 @@ const logout = () => {
         <h2>ПАРАМЕТРЫ ГРУЗА</h2>
         <div class="row">
           <div class="field">
-            <label>Вес груза (тонн)</label>
+            <label style="font-size: 18px;">Вес груза (тонн)</label>
             <input type="text" v-model="weight"  placeholder="0.5">
           </div>
           <div class="field">
-            <label>Объем груза (м2)</label>
+            <label style="font-size: 18px;">Объем груза (м2)</label>
             <input type="text" v-model="volumem3" placeholder="1.0">
           </div>
         </div>
         
         <div class="field">
-          <label>Описание груза (необязательно)</label>
+          <label style="font-size: 18px;">Описание груза (необязательно)</label>
           <textarea rows="5" v-model="description"></textarea>
         </div>
         <p v-if="messageAlert" :style="{color: colormessage, fontSize:   '20px' }"> {{ messageAlert }}</p>
-        <button class="submit">Подать заявку</button>
+        <button class="submit" style="font-size: 18px;">Подать заявку</button>
       </div>
     </div>
   </form>
   </div>
 </template>
 
-<style >
+<style   >
 
- hr{
+hr{
     width: 340px;
- }
-.card-title
-{
-  font-size: 22px;
-  color: black;
 }
 
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
-#app { 
-  max-width: none ;
-  padding: 0 ;
-  margin: 0 ;
-  width: 100% ;
+
+#app {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 body, html {
@@ -181,194 +177,201 @@ body, html {
   height: 100%;
 }
 
-.content
-{
-    flex: 1;
-    background: #f4f7fb; 
-    display: flex;
-    flex-direction: column;
-}
-
 .layout {
-  display: flex;         
-  min-height: 100vh;    
+  display: flex;
+  min-height: 100vh;
   font-family: Arial;
   width: 100%;
 }
 
+.content {
+  flex: 1;
+  background: #f4f7fb;
+  display: flex;
+  flex-direction: column;
+}
 
 .sidebar {
-  width: 340px;              
-  background: #1D2D50;      
-  color: white;             
+  width: 340px;
+  min-width: 340px;
+  background: #1D2D50;
+  color: white;
   display: flex;
-  flex-direction: column;    
-   min-width: 340px;   
-  flex-shrink: 0;  
-  height: 100vh; 
+  flex-direction: column;
+  height: 100vh;
   padding: 20px 0;
+  flex-shrink: 0;
 }
 
 .logo {
   padding: 0 25px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1); 
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
+
 .logo h1 {
   font-family: Impact;
-  font-size: 32px;
+  font-size: 26px;
 }
+
 .logo h1 span {
-  color: #4da6ff;          
+  color: #4da6ff;
 }
+
 .logo p {
-  font-size: 12px;
-  letter-spacing: 3px;      
+  font-size: 10px;
+  letter-spacing: 3px;
   color: #a0aabf;
   margin-top: 3px;
 }
 
-
 .user {
-  display: flex;           
-  align-items: center;      
+  display: flex;
+  align-items: center;
   padding: 20px 25px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
+
 .avatar {
   width: 45px;
   height: 45px;
   background: #2a7fff;
-  border-radius: 50%;     
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;   
+  justify-content: center;
   margin-right: 12px;
   font-weight: bold;
 }
-.user-name { font-size: 13px; }
-.user-role { font-size: 11px; color: #a0aabf; }
+
+.user-name {
+  font-size: 16px;
+}
+
+.user-role {
+  font-size: 17px;
+  color: #a0aabf;
+}
 
 .menu {
   margin-top: 15px;
-  flex: 1;                
+  flex: 1;
 }
+
+.podmenu,
+.podmenu_active {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 25px;
+}
+
+.podmenu_active {
+  background: rgba(0,0,0,0.25);
+}
+
+.podmenu img,
+.podmenu_active img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
 .menu-item {
-  display: block;           
+  display: inline;
   padding: 12px 25px;
   color: #c5cce0;
   font-size: 14px;
-  cursor: pointer;          
-  text-decoration: none;
-}
-.podmenu_active
-{
-   display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 25px;
-  background: rgba(0,0,0,0.25); ;
-}
-.podmenu_active img
-{
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
-.logout {
-  padding: 15px 25px;
-  font-size: 14px;
-  color: #6b7590;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .logout {
   padding: 15px 25px;
-  font-size: 12px;
+  font-size: 20px;
   color: #6b7590;
   cursor: pointer;
+}
+
+.topbar {
+  background: white;
+  padding: 20px 40px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.card {
+  background: white;
+  margin: 30px 40px;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.card-title {
+  font-size: 22px;
+  color: black;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: black;
+  font-size: 20px;
+  margin-bottom: 20px;
+  margin-top: 25px;
 }
 
 .row {
-  display: flex;           
-  gap: 20px;               
+  display: flex;
+  gap: 20px;
 }
-
 
 .field {
-  flex: 1;                 
+  flex: 1;
   display: flex;
-  flex-direction: column;    
+  flex-direction: column;
   margin-bottom: 15px;
 }
+
 .field label {
-  font-size: 20px !important;
+  font-size: 15px;
   color: #777;
   margin-bottom: 6px;
 }
+
 .field input,
 .field textarea {
   padding: 10px 14px;
   border: 1px solid #d5dae3;
   border-radius: 4px;
-  background: #f4f7fb;      
-  font-size: 22px;
-  outline: none;            
+  background: #f4f7fb;
+  font-size: 16px;
+  outline: none;
   font-family: inherit;
 }
 
-
 .submit {
-  background: #1A5FBB;
+  background: #2a7fff;
   color: white;
   border: none;
   padding: 12px 30px;
-  border-radius: 20px !important;
-  font-size: 20px !important;
+  border-radius: 4px;
+  font-size: 14px;
   cursor: pointer;
-  float: right;     
-}      
+  float: right;
+}
+
 .submit:hover {
-  background: #1f6fe0;      
+  background: #1f6fe0;
 }
 
-.podmenu
-{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 25px;
-}
-.podmenu img
-{
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
-.topbar {
-  background: white; 
-  color: black;      
-  padding: 20px 40px;
-  font-weight: bold;
-  font-size: 18px;    
-  border-bottom: 1px solid #d5dae3;
-}
-
-.card {
-  background: white;
-  margin: 20px 40px;
-  padding: 30px;
-  border-radius: 8px;
-  max-width: 100%;
-  
-}
-h2
-{
-    color: black;
-}
 form {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+a {
+  text-decoration: none;
 }
 
 </style>

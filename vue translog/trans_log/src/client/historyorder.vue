@@ -55,13 +55,13 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
       </div>
 
       <div class="menu">
-        <div class="podmenu">
+        <div class="podmenu" @click="$router.push('/neworder')">
             <img :src="plus"> 
-            <a class="menu-item active" @click="$router.push('/neworder')">Новая заявка</a>
+            <a class="menu-item active" >Новая заявка</a>
         </div>
-        <div class="podmenu">
+        <div class="podmenu" @click="$router.push('/statusorder')">
             <img :src="time">
-            <a class="menu-item" @click="$router.push('/statusorder')">Статус заявок</a>
+            <a class="menu-item">Статус заявок</a>
         </div >
         <div class="podmenu_active">
             <img :src="history">
@@ -75,7 +75,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
     <div class="content">
       
       <div class="topbar">История заявок</div>
-        <div class="cardhistory">
+        <div class="cardhistory" style="margin: 30px;">
   <div class="row">
           <div class="lab">
               <p class="lab_title">Всего заявок</p>
@@ -99,7 +99,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
           </div>
         </div>
             <h2 style="margin-top: 30px;">История всех заявок</h2>
-            <div style="overflow-y: auto; max-height: 460px; ">
+         <div style="overflow-x: auto; overflow-y: auto !important; max-height: 460px !important; ">
                 <table>
                     <thead>
                         <tr>
@@ -128,7 +128,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
 </div>
 </template>
 
-<style>
+<style >
 
 #titleorder
 {
@@ -141,7 +141,8 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 15px; 
+   min-width: 1400px;
 }
 thead tr {
   border-bottom: 1px solid #d5dae3;
@@ -207,7 +208,7 @@ padding-top: 10px;
   padding: 0 ;
   margin: 0 ;
   width: 100% ;
-}
+}Статус зая
 
 body, html {
   margin: 0;
@@ -216,12 +217,13 @@ body, html {
   height: 100%;
 }
 
-.content
-{
+.content {
     flex: 1;
-    background: #f4f7fb; 
+    background: #f4f7fb;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .layout {
@@ -262,21 +264,36 @@ body, html {
   margin-top: 3px;
 }
 
-.podmenu_active
-{
-   display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 25px;
-  background: rgba(0,0,0,0.25); ;
-}
-.podmenu_active img
-{
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+.podmenu,
+.podmenu_active {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 25px;
+  cursor: pointer;
 }
 
+.podmenu img,
+.podmenu_active img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
+.menu-item {
+  display: inline;
+  padding: 12px 25px;
+  color: #c5cce0;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+.menu {
+  margin-top: 15px;
+  flex: 1;
+}
 .user {
   display: flex;           
   align-items: center;      
@@ -306,18 +323,6 @@ body, html {
   cursor: pointer;
 }
 
-.menu {
-  margin-top: 15px;
-  flex: 1;                   
-}
-.menu-item {
-  display: inline;            
-  padding: 12px 25px;
-  color: #c5cce0;
-  font-size: 14px;
-  cursor: pointer;          
-  text-decoration: none;
-}
 
 .row {
   display: flex;           
@@ -362,18 +367,14 @@ body, html {
   background: #1f6fe0;      
 }
 
-.podmenu
-{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 25px;
-}
-.podmenu img
-{
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+.menu-item {
+  color: #c5cce0;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
 .topbar {
   background: white;
@@ -384,9 +385,10 @@ body, html {
 
 .cardhistory {
   background: white;
-  margin: 30px 40px;
+  margin: 10px;
   padding: 30px;
   border-radius: 8px;
+  max-width: none;
 }
 
 a

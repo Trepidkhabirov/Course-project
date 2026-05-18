@@ -6,20 +6,65 @@ import people from '../assets/images/users.png'
 import spravka from '../assets/images/spavka.png'
 import transport from '../assets/images/transport.png'
 
-const showTripModal = ref(false)
-const currentOrder = ref(null)
+const showUsermodal = ref(false)
+const selectedUser = ref(null)
 
 const users = ref([])
-
+const role = ref('')
 
 const fullname = localStorage.getItem('fullname')
-onMounted(async () => 
-{
-    const response = await fetch(`http://localhost:5095/api/User/GetUser`)
-    const data = await response.json()
-    users.value = data
-})
 
+const loadUsers = async () => {
+  const response = await fetch(`http://localhost:5095/api/User/GetUser`)
+  const data = await response.json()
+  users.value = data
+}
+onMounted(loadUsers)
+
+const getRoleName = (roleId) => 
+{
+     switch (roleId) {
+    case 1: return 'Администратор'
+    case 2: return 'Менеджер'
+    case 3: return 'Водитель'
+    case 4: return 'Клиент'
+    default: return 'Неизвестно'
+  }
+}
+
+const openUserModal = (user) => {
+  selectedUser.value = user
+showUsermodal.value = true
+}
+const saveUser = async () =>
+{
+  const response = await fetch(
+    `http://localhost:5095/api/User/UpdateUser`,
+    {
+      method: "PUT",
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        userId: selectedUser.value.userId,
+        fullName: selectedUser.value.fullName,
+        username: selectedUser.value.username,
+        numberphone: selectedUser.value.numberphone,
+        roleId: selectedUser.value.roleId
+      })
+    }
+  )
+  showUsermodal.value = false
+}
+
+const deleteuser = async (user) =>
+{
+  const response = await fetch(
+    `http://localhost:5095/api/User/DeleteUser?userId=${user.userId}`,
+    {
+      method: "DELETE"
+    }
+  )
+  await loadUsers()
+}
 
 const logout = () => {
   localStorage.clear()
@@ -73,6 +118,7 @@ const logout = () => {
                 <td>ФИО</td>
                 <td>Логин</td>
                 <td>Номер телефона</td>
+                <td>Роль</td>
               </tr>
             </thead>
             <tbody>
@@ -80,10 +126,11 @@ const logout = () => {
                 <td>{{ u.fullName }}</td>
                <td>{{ u.username}}</td>
                  <td>{{ u.numberphone }}</td>
+                 <td>{{ getRoleName(u.roleId) }}</td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
-                    <button class="manbtn" @click="openStatusModal(order)">Изменить</button>
-                    <button class="manbtn" @click="openTripModal(order)" style="background-color: red;">Удалить</button>  
+                    <button class="manbtn" @click="openUserModal(u)">Изменить</button>
+                    <button class="manbtn" @click="deleteuser(u)" style="background-color: red;">Удалить</button>  
                   </div>
                 </td>
               </tr>
@@ -93,74 +140,35 @@ const logout = () => {
         </div>
     </div>
   </div>
-  <div v-if="showTripModal" class="simple-modal">
+  <div v-if="showUsermodal" class="simple-modal">
   <div class="simple-modal-content">
-    <h2>Новый рейс</h2>
-    <div class="simple-badge">Заявка #{{ currentOrder?.orderId }}</div>
-    
-    <div class="simple-row">
-      <div class="simple-field">
-        <label>Выберите транспорт</label>
-        <select v-model="tripData.vehicleId" class="simple-select">
-          <option value="Выберите транспорт"></option>
-          <option v-for="v in vehicles" :key="v.vehicleId" :value="v.vehicleId">
-            {{ v.brand }} {{ v.model }} {{ v.licensePlate }}
-          </option>
-        </select>
-      </div>
-      <div class="simple-field">
-        <label>Водитель</label>
-        <input :value="selectedDriverName" disabled placeholder="Выберите транспорт" >
-      </div>
-    </div>
+    <h2>Изменить пользователя</h2>
 
-    <div class="simple-row">
-      <div class="simple-field">
-        <label>Откуда</label>
-        <input v-model="tripData.from">
-      </div>
-      <div class="simple-field">
-        <label>Куда</label>
-        <input v-model="tripData.to">
-      </div>
-    </div>
-
-    <div class="simple-row">
-      <div class="simple-field">
-        <label>Дата отправления</label>
-        <input type="date" v-model="tripData.departureDate">
-      </div>
-      <div class="simple-field">
-        <label>Дата прибытия</label>
-        <input type="date" v-model="tripData.arrivalDate">
-      </div>
-    </div>
-    
     <div class="simple-field">
-      <label>Длина маршрута (км)</label>
-      <input type="number" v-model="tripData.distance_km">
+      <label>ФИО</label>
+      <input v-model="selectedUser.fullName">
     </div>
-    
-    <div class="simple-buttons">
-      <button class="simple-cancel" @click="showTripModal = false">Отмена</button>
-      <button class="simple-save" @click="saveTrip">Сохранить</button>
+    <div class="simple-field">
+      <label>Логин</label>
+      <input v-model="selectedUser.username">
     </div>
-  </div>
-</div>
-<div v-if="showStatusModal" class="showStatusModal" >
-  <div>
+    <div class="simple-field">
+      <label>Номер телефона</label>
+      <input v-model="selectedUser.numberphone">
+    </div>
+    <div class="simple-field">
+      <label>Роль</label>
+      <select v-model="selectedUser.roleId" class="simple-select">
+        <option :value="1">Администратор</option>
+        <option :value="2">Менеджер</option>
+        <option :value="3">Водитель</option>
+        <option :value="4">Клиент</option>
+      </select>
+    </div>
 
-    <p>Изменить статус #1</p>
-    <p>Новый статус</p>
-    <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">В обработке</option>
-      <option value="Выполняется">Выполняется</option>
-      <option value="Доставлено">Доставлено</option>
-      <option value="Отменено">Отменено</option>
-    </select>
     <div class="simple-buttons">
-      <button class="simple-cancel" @click="showStatusModal = false">Отмена</button>
-      <button class="simple-save" @click="saveStatus">Сохранить</button>
+      <button class="simple-cancel" @click="showUsermodal = false">Отмена</button>
+      <button class="simple-save" @click="saveUser">Сохранить</button>
     </div>
   </div>
 </div>
