@@ -6,8 +6,8 @@ import people from '../assets/images/users.png'
 import spravka from '../assets/images/spavka.png'
 import transport from '../assets/images/transport.png'
 
-const showTripModal = ref(false)
-const currentOrder = ref(null)
+const showkmmodal = ref(false)
+const selectedType = ref(null)
 
 const vehiclesType = ref([])
 const roles = ref([])
@@ -23,6 +23,33 @@ onMounted(async () =>
     roles.value = data2
 })
 
+
+
+const openTypeModal = (vehicle) =>
+{
+  selectedType.value = vehicle
+  showkmmodal.value = true
+}
+
+const saveType = async () =>
+{
+  const response = await fetch(
+    `http://localhost:5095/api/VehicleType/UpdateType`,
+    {
+      method: "PUT",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(
+        {
+           "typeId": selectedType.value.typeId,
+           "pricePerKm": selectedType.value.pricePerKm
+        }
+      )
+    }
+  )
+  showkmmodal.value = false
+    const response1 = await fetch(`http://localhost:5095/api/VehicleType/GetTypes`)
+  vehiclesType.value = await response1.json()
+}
 
 const logout = () => {
   localStorage.clear()
@@ -75,7 +102,7 @@ const logout = () => {
                   <p style="font-weight: bold; font-size: 22px;">{{ v.name }}</p>
                   <p style="font-size: 16px; text-wrap: nowrap;">Стоимость за 1 км пути: {{ v.pricePerKm }}</p>
                 </div>
-                <button class=""simplesave style="width: 200px; margin-left: 170px; margin-top: 20px;">Изменить</button>
+                <button class="simple-save" @click="openTypeModal(v)" style="width: 200px; margin-left: 170px; margin-top: 20px;">Изменить</button>
               </div>
               </div>
               <div class="typeauto">
@@ -88,7 +115,7 @@ const logout = () => {
                 </div>
               </div>
             </div>
-            <div class="typeauto" style="margin-left: 70px; height: 320px; ;">
+            <div class="typeauto" style="margin-left: 70px; height: 320px;">
               <h2>Роли пользователей</h2>
               <div class="title_row" v-for="r in roles" :key="r.roleId">
   
@@ -99,6 +126,20 @@ const logout = () => {
               </div>
         </div>
     </div>
+      <div v-if="showkmmodal" class="simple-modal">
+  <div class="simple-modal-content">
+    <h2>Изменить цену за 1 км</h2>
+
+    <div class="simple-field">
+      <label>Цена за 1 км</label>
+      <input v-model="selectedType.pricePerKm">
+    </div>
+    <div class="simple-buttons">
+      <button class="simple-cancel" @click="showkmmodal = false">Отмена</button>
+      <button class="simple-save" @click="saveType">Сохранить</button>
+    </div>
+  </div>
+</div>
   </template>
 <style>
 .statuses

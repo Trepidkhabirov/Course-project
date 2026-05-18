@@ -30,13 +30,11 @@ public class VehicleTypeController : ControllerBase
     }
 
     [HttpPut("UpdateType")]
-    public IActionResult UpdateType(int id, [FromBody] VehicleTypeModel model)
+    public IActionResult UpdateType([FromBody] VehicleTypeModel model)
     {
         var db = new TransLogCourseContext();
-        var type = db.VehicleTypes.FirstOrDefault(t => t.TypeId == id);
+        var type = db.VehicleTypes.FirstOrDefault(t => t.TypeId == model.TypeId);
         if (type == null) return NotFound();
-        type.Name = model.Name;
-        type.Description = model.Description;
         type.PricePerKm = model.PricePerKm;
         db.SaveChanges();
         return Ok(type);
@@ -44,6 +42,7 @@ public class VehicleTypeController : ControllerBase
 }
 public class VehicleTypeModel
 {
+    public int TypeId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public decimal PricePerKm { get; set; }
