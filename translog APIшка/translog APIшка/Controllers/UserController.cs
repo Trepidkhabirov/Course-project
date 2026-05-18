@@ -1,9 +1,10 @@
  using Microsoft.AspNetCore.Mvc;
  using Microsoft.EntityFrameworkCore;
+ using Microsoft.EntityFrameworkCore.Update.Internal;
  using translog_APIшка.Model;
  
  namespace translog_APIшка.Controllers;
- 
+
  [ApiController]
  [Route("api/[controller]")]
  public class UserController : ControllerBase
@@ -16,7 +17,7 @@
          {
              return BadRequest(ModelState);
          }
- 
+
          var users = db.Users.FromSqlRaw(
              $"select * from users where username = '{login}' and password = '{password}'").ToList();
          if (users.Count() == 0)
@@ -27,7 +28,7 @@
          {
              foreach (var user in users)
              {
- 
+
                  return Ok(new
                  {
                      message = "Вход выполнен",
@@ -35,20 +36,20 @@
                      login = user.Username,
                      password = user.Password,
                      roleId = user.RoleId,
-                    fullname = user.FullName,
-                    numberhone =  user.Numberphone,
-                    isActive = user.IsActive
+                     fullname = user.FullName,
+                     numberhone = user.Numberphone,
+                     isActive = user.IsActive
                  });
              }
          }
- 
+
          return Unauthorized(new { message = "Ошибка авторизации" });
      }
-     
+
      [HttpPost("register")]
      public IActionResult Register(RegisterModel model)
      {
-         
+
          if (!ModelState.IsValid)
              return BadRequest(ModelState);
          var db = new TransLogCourseContext();
@@ -57,16 +58,16 @@
          {
              return BadRequest(new { message = "Такой логин уже есть!" });
          }
- 
+
          var newUser = new User
          {
-             
+
              Username = model.Username,
-             Password =  model.Password,
+             Password = model.Password,
              RoleId = model.RoleId ?? 0,
              FullName = model.fullname,
              Numberphone = model.numberphone,
-             IsActive =  model.isActive
+             IsActive = model.isActive
          };
          db.Users.Add(newUser);
          db.SaveChanges();
@@ -83,6 +84,7 @@
              }
          );
      }
+
      [HttpGet("GetUser")]
      public IActionResult GetUser()
      {
@@ -96,35 +98,47 @@
          }
          else
          {
-                 return Ok(users);
+             return Ok(users);
          }
+
          return Unauthorized(new { message = "Ошибка" });
      }
- 
+
      [HttpDelete("DeleteUser")]
-     public IActionResult DeleteUser(string login)
+     public IActionResult DeleteUser(string userId)
      {
          var db = new TransLogCourseContext();
          if (!ModelState.IsValid)
              return BadRequest(ModelState);
-         var users = db.Users.FromSqlRaw($"select * from users where username = '{login}'").ToList();
+         var users = db.Users.FromSqlRaw($"select * from users where user_id = '{userId}'").ToList();
          if (users.Count() == 0)
          {
              return BadRequest(new { message = "Такого пользователя нету!" });
          }
-         else
-         {
-             foreach (var user in users)
-             {
-                 user.IsActive = 0;
-             }
-             db.SaveChanges();
-             return Ok(new
-             {
-                 message = "Пользователь удален!"
-             });
-         }
+         db.Users.RemoveRange(users);
+         db.SaveChanges();
+         return Ok(new { message = "Пользователь удален" });
+
      }
+
+     [HttpPut("UpdateUser")]
+     public IActionResult updateUser(UpdateUserModel model)
+     {
+         var db = new TransLogCourseContext();
+         var user = db.Users.FirstOrDefault(u => u.UserId == model.UserId);
+         if (user == null)
+             return BadRequest(new { message = "Пользователь не найден!" });
+        
+         user.FullName = model.FullName;
+         user.Username = model.Username;
+         user.Numberphone = model.Numberphone;
+         user.RoleId = model.RoleId;
+
+         db.SaveChanges();
+    
+         return Ok(new { message = "Пользователь обновлён!" });
+     }
+
  }
  public class RegisterModel
  {
@@ -134,5 +148,13 @@
      public string fullname { get; set; }
      public string numberphone { get; set; }
      public int isActive  { get; set; }
+ }
+ public class UpdateUserModel
+ {
+     public int UserId { get; set; }
+     public string FullName { get; set; }
+     public string Username { get; set; }
+     public string Numberphone { get; set; }
+     public int RoleId { get; set; }
  }
  
