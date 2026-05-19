@@ -64,8 +64,19 @@ const addTransport = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newTransport.value)
   })
+  newTransport.value = 
+{
+    licensePlate: '',
+  brand: '',
+  model: '',
+  payloadKg: null,
+  volumeM3: null,
+  vehicleTypeId: null,
+  userId: null
+}
   showAddTransport.value = false
   await loadTransports()
+
 }
 
 

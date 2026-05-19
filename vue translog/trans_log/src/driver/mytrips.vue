@@ -54,6 +54,13 @@ const saveStatus = async () =>
     o.vehicle?.drivers?.some(d => d.userId == userId)
   )
 }
+const showDescModal = ref(false)
+const currentDesc = ref('')
+const openDescModal = (order) =>
+{
+  currentDesc.value = order.description || 'Описание не указано'
+  showDescModal.value = true
+}
 </script>
 <template>
   <div class="layout">
@@ -116,7 +123,7 @@ const saveStatus = async () =>
     <td>
         <div style="display: flex; flex-direction: row; gap: 5px;">
             <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
-            <button class="manbtn" >Описание</button>  
+            <button class="manbtn" @click="openDescModal(o)" >Описание</button>  
         </div>
     </td>
   </tr>
@@ -142,6 +149,15 @@ const saveStatus = async () =>
       <button class="simple-save" @click="saveStatus">Сохранить</button>
     </div>
   </div>
+</div>
+<div v-if="showDescModal" class="showStatusModal">
+    <div>
+      <p>Описание заказа</p>
+      <p style="font-size: 16px; color: black;">{{ currentDesc }}</p>
+      <div class="simple-buttons">
+          <button class="simple-save" @click="showDescModal = false">Закрыть</button>
+      </div>
+    </div>
 </div>
 </template>
 

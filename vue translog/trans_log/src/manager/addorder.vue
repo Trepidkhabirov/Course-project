@@ -58,9 +58,9 @@ const openTripModal = (order) => {
 }
 const selectedDriverName = computed(() => {
   if (!tripData.value.vehicleId) return ''
-  const driver = drivers.value.find(d => d.vehicleId === tripData.value.vehicleId)
-  if (!driver || !driver.user) return 'Водитель не привязан'
-  return driver.user.fullName
+  const vehicle = vehicles.value.find(v => v.vehicleId === tripData.value.vehicleId)
+  if (!vehicle || !vehicle.drivers?.[0]?.user) return 'Водитель не привязан'
+  return vehicle.drivers[0].user.fullName
 })
 
 const departurepoint = ref('')

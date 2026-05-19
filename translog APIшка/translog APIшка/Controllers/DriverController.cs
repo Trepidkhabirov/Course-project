@@ -13,7 +13,7 @@ namespace translog_APIшка.Controllers;
       public IActionResult GetDrivers()
       {
           var db = new TransLogCourseContext();
-          var drivers = db.Drivers.Include(d => d.User).Include(d => d.Vehicle).ToList();
+          var drivers = db.Drivers.Include(d => d.User).Include(d => d.Vehicle).ThenInclude(v => v.VehicleType).ToList();
           if (drivers.Count == 0)
               return NotFound(new { message = "Водителей нету" });
           return Ok(drivers);

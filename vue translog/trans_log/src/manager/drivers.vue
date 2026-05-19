@@ -81,7 +81,7 @@ const fullname = localStorage.getItem('fullname')
            <tbody>
   <tr v-for="d in drivers" :key="d.driverId">
     <td>{{ d.user?.fullName || '-' }}</td>
-    <td>{{ d.vehicle?.bodyType || '-'}}</td>
+  <td>{{ d.vehicle?.vehicleType?.name || '-' }}</td>
     <td>{{ d.vehicle?.brand || '-'}} {{ d.vehicle.model || '-'}}</td>
     <td>{{ d.vehicle.licensePlate || '-'}} </td>
     <td>{{ d.vehicle?.payloadKg/1000 || '-' }}</td>

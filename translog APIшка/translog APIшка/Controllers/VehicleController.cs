@@ -40,12 +40,12 @@ public class VehicleController : ControllerBase
         var db = new TransLogCourseContext();
         var newVehicle = new Vehicle
         {
-            LicensePlate = model.LicensePlate,
-            Brand = model.Brand,
-            Model = model.Model,
-            PayloadKg = model.PayloadKg,
-            VolumeM3 = model.VolumeM3,
-            VehicleId = model.VehicleId,
+               LicensePlate = model.LicensePlate,
+                Brand = model.Brand,
+                Model = model.Model,
+                PayloadKg = model.PayloadKg,
+                VolumeM3 = model.VolumeM3,
+                VehicleTypeId = model.VehicleTypeId, 
         };
         db.Vehicles.Add(newVehicle);
         db.SaveChanges();
@@ -60,6 +60,7 @@ public class VehicleController : ControllerBase
             {
                 db.Drivers.Add(new Driver
                 {
+                    
                     UserId = model.UserId.Value,
                     VehicleId = newVehicle.VehicleId,
                     Working = "Активен"

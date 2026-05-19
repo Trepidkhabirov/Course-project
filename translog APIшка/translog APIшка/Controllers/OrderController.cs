@@ -83,11 +83,10 @@
               foreach (var o in order)
               {
                   o.Status = model.Status;
-                  o.DepartureTime = model.DepartureTime;
-                  o.ArrivalTime = model.ArrivalTime;
-                  o.VehicleId = model.VehicleId;
-                  o.DistanceKm = model.Distance_km;
-  
+                  if (model.DepartureTime != null) o.DepartureTime = model.DepartureTime;
+                  if (model.ArrivalTime != null) o.ArrivalTime = model.ArrivalTime;
+                  if (model.VehicleId != null) o.VehicleId = model.VehicleId;
+                  if (model.Distance_km != 0) o.DistanceKm = model.Distance_km;
               }
               db.SaveChanges();
               return Ok(new { message = "Заказ обновлен!", order});
