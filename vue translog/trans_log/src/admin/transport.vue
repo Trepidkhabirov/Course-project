@@ -7,24 +7,97 @@ import spravka from '../assets/images/spavka.png'
 import transport from '../assets/images/transport.png'
 
 const showTripModal = ref(false)
-const currentOrder = ref(null)
+
 
 const transports = ref([])
 
 
+const vehicleTypes = ref([])
+const drivers = ref([])
 const fullname = localStorage.getItem('fullname')
+const loadTransports = async () => {
+  const r = await fetch(`http://localhost:5095/api/Vehicle/GetTransport`)
+  transports.value = await r.json()
+}
 onMounted(async () => 
 {
-    const response = await fetch(`http://localhost:5095/api/Vehicle/GetTransport`)
-    const data = await response.json()
-    transports.value = data
+    await loadTransports()
+
+  const r2 = await fetch(`http://localhost:5095/api/VehicleType/GetTypes`)
+  vehicleTypes.value = await r2.json()
+
+  const r3 = await fetch(`http://localhost:5095/api/User/GetUser`)
+  const users = await r3.json()
+ drivers.value = users.filter(u => u.roleId === 3 && !u.driver?.vehicleId)
 })
 
 
 const logout = () => {
-  localStorage.clear()
+  localStorage.clear() 
   router.push('/authorization')
 }
+
+const showAddTransport = ref(false)
+const selectedTransport = ref(null)
+
+const opentrannsportmodal = (vehicle) =>
+{
+  selectedTransport.value = vehicle
+  showAddTransport.value = true
+}
+const newTransport = ref({
+  licensePlate: '',
+  brand: '',
+  model: '',
+  payloadKg: null,
+  volumeM3: null,
+  vehicleTypeId: null,
+  userId: null
+})
+const addTransport = async () => {
+  if (!newTransport.value.licensePlate || !newTransport.value.brand || !newTransport.value.model) {
+    alert('Заполните обязательные поля!')
+    return
+  }
+  await fetch(`http://localhost:5095/api/Vehicle/AddTransport`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newTransport.value)
+  })
+  showAddTransport.value = false
+  await loadTransports()
+}
+
+
+const showEditTransport = ref(false)
+const editTransport = ref(null)
+
+const openEditTransport = (vehicle) =>
+{
+  editTransport.value = {
+      vehicleId: vehicle.vehicleId,
+    licensePlate: vehicle.licensePlate,
+    brand: vehicle.brand,
+    model: vehicle.model,
+    payloadKg: vehicle.payloadKg,
+    volumeM3: vehicle.volumeM3,
+    vehicleTypeId: vehicle.vehicleTypeId,
+    userId: vehicle.drivers?.[0]?.userId ?? null
+  }
+  showEditTransport.value = true
+}
+const saveTransport = async () => 
+{
+   await fetch(`http://localhost:5095/api/Vehicle/UpdateTransport?vehicleId=${editTransport.value.vehicleId}`,
+   {
+     method: 'PUT',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify(editTransport.value)
+    })
+    showEditTransport.value = false
+    await loadTransports()
+}
+
 </script>
 <template>
   <div class="layout">
@@ -65,27 +138,33 @@ const logout = () => {
       <div class="topbar">Транспорт</div>
 
       <div class="card" >
-        <h2 id="titleorder" style="margin-top: -30px;">Транспортные средства</h2>
+        <div class="title_card">
+          <h2 id="titleorder" style="margin-top: -30px;">Транспортные средства</h2>
+          <button  class="simple-save" style="height: 40px; width: 200px; font-size: 18px;" @click="showAddTransport = true">Добавить</button>
+        </div>
         <div style="overflow-y: auto; max-height: 680px;" >
           <table>
             <thead>
               <tr>
-                <td>Гос. Номер.</td>
+               <td>Гос. Номер</td>
                 <td>Марка</td>
-                <td>Класс</td>
-                <td>Груз</td>
-                <td>Цена за 1 км</td>
+                <td>Грузоподъёмность (кг)</td>
+                <td>Объём (м³)</td>
+                <td>Тип</td>
                 <td>Водитель</td>
-              </tr>
+                </tr>
             </thead>
             <tbody>
               <tr v-for="t in transports" :key="t.vehicleId">
                 <td>{{ t.licensePlate }}</td>
                <td>{{ t.brand}} {{ t.model }}</td>
-                 <td>{{ t.vehicleTypeId }}</td>
+                 <td>{{ t.payloadKg }}</td>
+                 <td> {{ t.volumeM3 }}</td>
+                 <td>{{ t.vehicleType?.name?? 'Не указан' }}</td>
+                 <td>{{ t.drivers?.[0]?.user?.fullName ?? 'Не назначен' }}</td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
-                    <button class="manbtn" @click="openStatusModal(order)">Изменить</button>
+                    <button class="manbtn" @click="openEditTransport(t)">Изменить</button>
                   </div>
                 </td>
               </tr>
@@ -95,74 +174,111 @@ const logout = () => {
         </div>
     </div>
   </div>
-  <div v-if="showTripModal" class="simple-modal">
+  <div v-if="showAddTransport" class="simple-modal">
   <div class="simple-modal-content">
-    <h2>Новый рейс</h2>
-    <div class="simple-badge">Заявка #{{ currentOrder?.orderId }}</div>
-    
+    <h2>Добавить транспорт</h2>
+
     <div class="simple-row">
       <div class="simple-field">
-        <label>Выберите транспорт</label>
-        <select v-model="tripData.vehicleId" class="simple-select">
-          <option value="Выберите транспорт"></option>
-          <option v-for="v in vehicles" :key="v.vehicleId" :value="v.vehicleId">
-            {{ v.brand }} {{ v.model }} {{ v.licensePlate }}
-          </option>
+        <label>Гос. номер</label>
+        <input v-model="newTransport.licensePlate" placeholder="А001АА 777">
+      </div>
+      <div class="simple-field">
+        <label>Тип</label>
+        <select v-model="newTransport.vehicleTypeId" class="simple-select">
+          <option :value="null">Выберите тип</option>
+          <option v-for="vt in vehicleTypes" :key="vt.typeId" :value="vt.typeId">{{ vt.name }}</option>
         </select>
       </div>
+    </div>
+
+    <div class="simple-row">
       <div class="simple-field">
-        <label>Водитель</label>
-        <input :value="selectedDriverName" disabled placeholder="Выберите транспорт" >
+        <label>Марка</label>
+        <input v-model="newTransport.brand" placeholder="КАМАЗ">
+      </div>
+      <div class="simple-field">
+        <label>Модель</label>
+        <input v-model="newTransport.model" placeholder="5490">
       </div>
     </div>
 
     <div class="simple-row">
       <div class="simple-field">
-        <label>Откуда</label>
-        <input v-model="tripData.from">
+        <label>Грузоподъёмность (кг)</label>
+        <input type="number" v-model="newTransport.payloadKg">
       </div>
       <div class="simple-field">
-        <label>Куда</label>
-        <input v-model="tripData.to">
+        <label>Объём (м³)</label>
+        <input type="number" v-model="newTransport.volumeM3">
       </div>
     </div>
 
-    <div class="simple-row">
-      <div class="simple-field">
-        <label>Дата отправления</label>
-        <input type="date" v-model="tripData.departureDate">
-      </div>
-      <div class="simple-field">
-        <label>Дата прибытия</label>
-        <input type="date" v-model="tripData.arrivalDate">
-      </div>
-    </div>
-    
     <div class="simple-field">
-      <label>Длина маршрута (км)</label>
-      <input type="number" v-model="tripData.distance_km">
+      <label>Водитель</label>
+      <select v-model="newTransport.userId" class="simple-select">
+        <option :value="null">Без водителя</option>
+        <option v-for="d in drivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
+      </select>
     </div>
-    
+
     <div class="simple-buttons">
-      <button class="simple-cancel" @click="showTripModal = false">Отмена</button>
-      <button class="simple-save" @click="saveTrip">Сохранить</button>
+      <button class="simple-cancel" @click="showAddTransport = false">Отмена</button>
+      <button class="simple-save" @click="addTransport">Сохранить</button>
     </div>
   </div>
 </div>
-<div v-if="showStatusModal" class="showStatusModal" >
-  <div>
+<div v-if="showEditTransport" class="simple-modal">
+  <div class="simple-modal-content">
+    <h2>Изменить транспорт</h2>
 
-    <p>Изменить статус #1</p>
-    <p>Новый статус</p>
-    <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">В обработке</option>
-      <option value="Выполняется">Выполняется</option>
-      <option value="Доставлено">Доставлено</option>
-      <option value="Отменено">Отменено</option>
-    </select>
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Гос. номер</label>
+        <input v-model="editTransport.licensePlate">
+      </div>
+      <div class="simple-field">
+        <label>Тип</label>
+        <select v-model="editTransport.vehicleTypeId" class="simple-select">
+          <option :value="null">Выберите тип</option>
+          <option v-for="vt in vehicleTypes" :key="vt.typeId" :value="vt.typeId">{{ vt.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Марка</label>
+        <input v-model="editTransport.brand">
+      </div>
+      <div class="simple-field">
+        <label>Модель</label>
+        <input v-model="editTransport.model">
+      </div>
+    </div>
+
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Грузоподъёмность (кг)</label>
+        <input type="number" v-model="editTransport.payloadKg">
+      </div>
+      <div class="simple-field">
+        <label>Объём (м³)</label>
+        <input type="number" v-model="editTransport.volumeM3">
+      </div>
+    </div>
+
+    <div class="simple-field">
+      <label>Водитель</label>
+      <select v-model="editTransport.userId" class="simple-select">
+        <option :value="null">Без водителя</option>
+        <option v-for="d in drivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
+      </select>
+    </div>
+
     <div class="simple-buttons">
-      <button class="simple-cancel" @click="showStatusModal = false">Отмена</button>
-      <button class="simple-save" @click="saveStatus">Сохранить</button>
+      <button class="simple-cancel" @click="showEditTransport = false">Отмена</button>
+      <button class="simple-save" @click="saveTransport">Сохранить</button>
     </div>
   </div>
 </div>

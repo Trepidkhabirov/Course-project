@@ -16,7 +16,10 @@ public class VehicleController : ControllerBase
             return BadRequest(ModelState);
         }
         var db = new TransLogCourseContext();
-        var vehicle = db.Vehicles.Include(v => v.Drivers).ThenInclude(v => v.User).ToList();
+        var vehicle = db.Vehicles
+            .Include(v => v.Drivers).ThenInclude(v => v.User)
+            .Include(v => v.VehicleType)
+            .ToList();
         if (vehicle.Count == 0)
         {
             return Unauthorized("Машин нету");
@@ -46,6 +49,24 @@ public class VehicleController : ControllerBase
         };
         db.Vehicles.Add(newVehicle);
         db.SaveChanges();
+        if (model.UserId != null)
+        {
+            var driver = db.Drivers.FirstOrDefault(d => d.UserId == model.UserId);
+            if (driver != null)
+            {
+                driver.VehicleId = newVehicle.VehicleId;
+            }
+            else
+            {
+                db.Drivers.Add(new Driver
+                {
+                    UserId = model.UserId.Value,
+                    VehicleId = newVehicle.VehicleId,
+                    Working = "Активен"
+                });
+            }
+            db.SaveChanges();
+        }
         return Ok(new
         {
             message = "Машина добавлена!",
@@ -56,30 +77,32 @@ public class VehicleController : ControllerBase
     [HttpPut("UpdateTransport")]
     public IActionResult UpdateTransport(int vehicleId, VehicleModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
         var db = new TransLogCourseContext();
-        var vehicle = db.Vehicles.FromSqlRaw($"select * from vehicles where vehicle_id = '{vehicleId}'").ToList();
-        if (vehicle.Count == 0)
+        var vehicle = db.Vehicles
+            .Include(v => v.Drivers)
+            .FirstOrDefault(v => v.VehicleId == vehicleId);
+    
+        if (vehicle == null)
+            return NotFound("Такой машины нету");
+
+        vehicle.LicensePlate = model.LicensePlate;
+        vehicle.Brand = model.Brand;
+        vehicle.Model = model.Model;
+        vehicle.PayloadKg = model.PayloadKg;
+        vehicle.VolumeM3 = model.VolumeM3;
+        vehicle.VehicleTypeId = model.VehicleTypeId;
+
+        if (model.UserId != null)
         {
-            return Unauthorized("Такой машины нету");
+            var driver = db.Drivers.FirstOrDefault(d => d.UserId == model.UserId);
+            if (driver != null)
+                driver.VehicleId = vehicleId;
+            else
+                db.Drivers.Add(new Driver { UserId = model.UserId.Value, VehicleId = vehicleId, Working = "Активен" });
         }
-        else
-        {
-            foreach (var v in vehicle)
-            {
-                v.LicensePlate = model.LicensePlate;
-                v.Brand = model.Brand;
-                v.Model = model.Model;
-                v.PayloadKg = model.PayloadKg;
-                v.VolumeM3 = model.VolumeM3;
-                v.VehicleId = model.VehicleId;
-            }
-            db.SaveChanges();
-            return Ok(new {message = "Машина обновлена!",  vehicle});
-        }
+
+        db.SaveChanges();
+        return Ok(new { message = "Машина обновлена!" });
     }
 }
 
@@ -96,5 +119,7 @@ public class VehicleModel
     public decimal? PayloadKg { get; set; }
 
     public decimal? VolumeM3 { get; set; }
+    public int? VehicleTypeId { get; set; }
 
+    public int? UserId { get; set; }
 }

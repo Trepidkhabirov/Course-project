@@ -86,7 +86,6 @@ const fullname = localStorage.getItem('fullname')
     <td>{{ d.vehicle.licensePlate || '-'}} </td>
     <td>{{ d.vehicle?.payloadKg/1000 || '-' }}</td>
     <td><span class="status">{{ d.working || '-'}}</span></td>
-    <td>-</td>
   </tr>
 </tbody>
         </table>

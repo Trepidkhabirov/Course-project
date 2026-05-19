@@ -70,6 +70,63 @@ const logout = () => {
   localStorage.clear()
   router.push('/authorization')
 }
+
+const showAddUser = ref(false)
+const newUser = ref({
+  fullName: '',
+  username: '',
+  numberphone: '',
+  roleId: 4,
+  password: ''
+})
+const openShowAddUser = (user) =>
+{
+    showAddUser.value = true
+}
+
+const Adduser = async () =>
+{
+   if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
+    messsage.value = 'Заполните все поля!'
+    setTimeout(() => {
+      message.value = ''
+}, 5000)
+return
+  }
+  const response = await fetch(
+    `http://localhost:5095/api/User/register`,
+    {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+   username: newUser.value.username,
+      password: newUser.value.password,
+      roleId: newUser.value.roleId,
+      fullname: newUser.value.fullName,
+      numberphone: newUser.value.numberphone,
+      isActive: 1
+}
+)
+  })
+    const data = await response.json()
+    if (response.ok)
+  {
+
+    await loadUsers()
+    newUser.value = {
+      fullName: '',
+      username: '',
+      numberphone: '',
+      roleId: 4,
+      password: ''
+    }
+    message.value = data.message
+      setTimeout(() => {
+      message.value = ''
+}, 10000)
+    showAddUser.value = false
+  }
+}
 </script>
 <template>
   <div class="layout">
@@ -110,7 +167,10 @@ const logout = () => {
       <div class="topbar">Пользователи</div>
 
       <div class="card" >
-        <h3 id="titleorder" style="margin-top: -30px;">Все пользователи</h3>
+        <div class="title_card">
+          <h3 id="titleorder" style="margin-top: -30px;">Все пользователи</h3>
+          <button class="simple-save" style="height: 40px; width: 200px; font-size: 18px;" @click="openShowAddUser">Добавить</button>
+        </div>
         <div style="overflow-y: auto; max-height: 610px; width: 100%;" >
           <table>
             <thead>
@@ -135,8 +195,9 @@ const logout = () => {
                 </td>
               </tr>
             </tbody>
-            </table>
+          </table>
         </div>
+        <p style="color: black; margin-top: 40px; font-size: 16px" v-if="message">Удален</p>
         </div>
     </div>
   </div>
@@ -172,9 +233,59 @@ const logout = () => {
     </div>
   </div>
 </div>
+
+<div v-if="showAddUser" class="simple-modal">
+  <div class="simple-modal-content">
+    <h2>Добавление пользователя</h2>
+    
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>ФИО</label>
+        <input placeholder="Введите ФИО" v-model="newUser.fullName">
+      </div>
+      <div class="simple-field">
+        <label >Логин</label>
+        <input placeholder="Введите логин" v-model="newUser.username">
+      </div>
+    </div>
+    
+    <div class="simple-row">
+      <div class="simple-field">
+        <label>Номер телефона</label>
+        <input placeholder="Введите номер телефона" v-model="newUser.numberphone" >
+      </div>
+      <div class="simple-field">
+        <label>Роль</label>
+        <select  class="simple-select" v-model="newUser.roleId">
+          <option value="Выберите роль">Выберите роль</option>
+            <option :value="1">Администратор</option>
+            <option :value="2">Менеджер</option>
+            <option :value="3">Водитель</option>
+            <option :value="4">Клиент</option>
+        </select>
+      </div>
+    </div>
+    <div class="simple-field">
+      <label>Пароль</label>
+      <input v-model="newUser.password" type="password">
+    </div>
+    
+    <div class="simple-buttons">
+      <button class="simple-cancel" @click="showAddUser = false">Отмена</button>
+      <button class="simple-save" @click="Adduser" >Сохранить</button>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <style>
+.title_card
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 #titleorder
 {
   padding-top: 30px;
