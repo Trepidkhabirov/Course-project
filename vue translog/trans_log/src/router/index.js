@@ -10,6 +10,7 @@ import Trips from '@/manager/trips.vue'
 import UsersList from '@/admin/usersList.vue'
 import Spavki from '@/admin/spavki.vue'
 import Transport from '@/admin/transport.vue'
+import Mytrips from '@/driver/mytrips.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -67,6 +68,11 @@ const router = createRouter({
       path: '/transport',
       name: 'transport',
       component: Transport
+    },
+    {
+      path: '/mytrips',
+      name: 'mytrips',
+      component: Mytrips
     },
     {
       path: '/about',

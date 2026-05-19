@@ -25,7 +25,7 @@ const auth = async () =>
             break
             case 2: router.push('/addorder');
             break
-            case 3: router.push('/driver');
+            case 3: router.push('/mytrips');
             break
             case 4: router.push('/neworder')
             break
