@@ -31,6 +31,15 @@ onMounted(async () =>
 
 
 const fullname = localStorage.getItem('fullname')
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 </script>
 
 <template>
@@ -43,7 +52,7 @@ const fullname = localStorage.getItem('fullname')
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Менеджер</p>
@@ -98,7 +107,18 @@ const fullname = localStorage.getItem('fullname')
     <td>{{ order.arrivalTime || '—' }}</td>
     <td>{{ order.distanceKm || '—' }}</td>
     <td>{{ order.weight }}</td>
-    <td><span class="status">{{ order.status }}</span></td>
+    <td> <span 
+    class="status"
+    :class="{
+      waiting: order.status === 'Ожидает',
+      progress: order.status === 'Выполняется',
+      done: order.status === 'Доставлено',
+      cancel: order.status === 'Отменено'
+    }"
+  >
+    {{ order.status }}
+  </span>
+  </td>
   </tr>
 </tbody>
         </table>

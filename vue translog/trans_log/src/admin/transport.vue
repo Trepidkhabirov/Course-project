@@ -108,6 +108,15 @@ const saveTransport = async () =>
     showEditTransport.value = false
     await loadTransports()
 }
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 
 </script>
 <template>
@@ -119,7 +128,7 @@ const saveTransport = async () =>
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name">{{ fullname }}</p>
           <p class="user-role">Администратор</p>

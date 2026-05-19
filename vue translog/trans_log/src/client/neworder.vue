@@ -15,6 +15,16 @@ const volumem3 = ref('')
 const description = ref('')
 const colormessage = ref('')
 
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
+
 const order = async () =>
 {
   if (!departurepoint.value || !arrivalpoint.value || !weight.value || !volumem3.value)
@@ -39,7 +49,7 @@ return
         Weight: parseFloat(weight.value),
         Volumem3: parseFloat(volumem3.value),
         Description: description.value,
-        Status: 'Ожидает',
+        Status: 'В ожидании',
         ReceivedAt: new Date().toISOString()
       })
     }
@@ -80,7 +90,7 @@ const logout = () => {
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name">{{ fullname || 'Нет'}}</p>
           <p class="user-role">Клиент</p>

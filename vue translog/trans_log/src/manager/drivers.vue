@@ -22,7 +22,15 @@ onMounted(async () =>
   console.log(data)
 })
 const fullname = localStorage.getItem('fullname')
+const initials = computed(() => {
+  if (!fullname) return ''
 
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 
 </script>
 
@@ -36,7 +44,7 @@ const fullname = localStorage.getItem('fullname')
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Менеджер</p>

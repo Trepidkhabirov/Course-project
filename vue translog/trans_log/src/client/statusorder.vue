@@ -45,6 +45,16 @@ const cancel = async (orderId) =>
   
 }
 
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
+
 </script>
 <template>
   <div class="layout">
@@ -56,7 +66,7 @@ const cancel = async (orderId) =>
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Клиент</p>
@@ -106,7 +116,19 @@ const cancel = async (orderId) =>
                  <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
                  <td>{{ order.departureTime ? new Date(order.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте' }} → {{ order.arrivalTime ? new Date(order.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
                <td>{{ order.weight }}</td>
-                <td><span class="status выполняется">{{ order.status }}</span></td>
+                <td>
+                    <span 
+    class="status"
+    :class="{
+      waiting: order.status === 'Ожидает',
+      progress: order.status === 'Выполняется',
+      done: order.status === 'Доставлено',
+      cancel: order.status === 'Отменено'
+    }"
+  >
+    {{ order.status }}
+  </span>
+                </td>
                 <td> <button 
     v-if="order.status === 'Ожидает'" 
     @click="cancel(order.orderId)"
@@ -123,6 +145,33 @@ const cancel = async (orderId) =>
 </template>
 
 <style >
+
+.status {
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+}
+
+.waiting {
+  background-color: gray;
+}
+
+.progress {
+  background-color: orange;
+}
+
+.done {
+  background-color: green;
+}
+
+.cancel {
+  background-color: red;
+}
 
  hr{
     width: 340px;

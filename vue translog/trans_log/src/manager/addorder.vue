@@ -121,7 +121,15 @@ const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
 const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
 const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+const initials = computed(() => {
+  if (!fullname) return ''
 
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 
 </script>
 <template>
@@ -133,7 +141,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name">{{ fullname }}</p>
           <p class="user-role">Менеджер</p>
@@ -204,7 +212,20 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
                <td>{{ new Date(order.receivedAt).toLocaleDateString('ru-RU') }}</td>
                  <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
                <td>{{ order.weight }}</td>
-                <td><span class="status выполняется">{{ order.status }}</span></td>
+                <td>
+   <span 
+    class="status"
+    :class="{
+      waiting: order.status === 'Ожидает',
+      progress: order.status === 'Выполняется',
+      done: order.status === 'Доставлено',
+      cancel: order.status === 'Отменено'
+    }"
+  >
+    {{ order.status }}
+  </span>
+
+                </td>
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
                     <button class="manbtn" @click="openStatusModal(order)">Статус</button>

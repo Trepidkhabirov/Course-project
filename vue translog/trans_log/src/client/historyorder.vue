@@ -28,6 +28,15 @@ onMounted(async () => {
   console.log(data)
 }
 })
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 
 const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
@@ -47,7 +56,7 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name">{{ fullname }}</p>
           <p class="user-role">Клиент</p>
@@ -118,7 +127,20 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
                  <td>{{ order.departurePoint }} → {{ order.arrivalPoint }}</td>
                  <td>{{ order.departureTime ? new Date(order.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте' }} → {{ order.arrivalTime ? new Date(order.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
                <td>{{ order.weight }}</td>
-                <td><span class="status выполняется">{{ order.status }}</span></td>
+                <td>
+                     <span 
+    class="status"
+    :class="{
+      waiting: order.status === 'Ожидает',
+      progress: order.status === 'Выполняется',
+      done: order.status === 'Доставлено',
+      cancel: order.status === 'Отменено'
+    }"
+  >
+    {{ order.status }}
+  </span> 
+
+                </td>
               </tr>
             </tbody>
         </table>

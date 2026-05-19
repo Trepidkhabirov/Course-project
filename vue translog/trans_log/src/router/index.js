@@ -11,6 +11,7 @@ import UsersList from '@/admin/usersList.vue'
 import Spavki from '@/admin/spavki.vue'
 import Transport from '@/admin/transport.vue'
 import Mytrips from '@/driver/mytrips.vue'
+import Mytransport from '@/driver/mytransport.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -73,6 +74,11 @@ const router = createRouter({
       path: '/mytrips',
       name: 'mytrips',
       component: Mytrips
+    },
+    {
+      path: '/mytransport',
+      name: 'mytransport',
+      component: Mytransport
     },
     {
       path: '/about',

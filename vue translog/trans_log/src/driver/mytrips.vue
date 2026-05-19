@@ -61,6 +61,15 @@ const openDescModal = (order) =>
   currentDesc.value = order.description || 'Описание не указано'
   showDescModal.value = true
 }
+const initials = computed(() => {
+  if (!fullname) return ''
+
+  return fullname
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+})
 </script>
 <template>
   <div class="layout">
@@ -72,7 +81,7 @@ const openDescModal = (order) =>
       </div>
 
       <div class="user">
-        <div class="avatar">ИИ</div>
+        <div class="avatar">{{ initials }}</div>
         <div>
           <p class="user-name"> {{ fullname }}</p>
           <p class="user-role">Водитель</p>
@@ -82,11 +91,11 @@ const openDescModal = (order) =>
       <div class="menu">
         <div class="podmenu_active">
             <img :src="order"> 
-            <a class="menu-item active" @click="$router.push('/addorder')">Мои рейсы</a>
+            <a class="menu-item active" >Мои рейсы</a>
         </div>
-        <div class="podmenu">
+        <div class="podmenu" @click="$router.push('/mytransport')">
             <img :src="transport">
-            <a class="menu-item" @click="$router.push('/trips')">Транспорт</a>
+            <a class="menu-item">Транспорт</a>
         </div >
         </div>
         <hr>
@@ -98,7 +107,7 @@ const openDescModal = (order) =>
       <div class="topbar">Мои рейсы</div>
         <div class="card">
             <h2>Мои рейсы</h2>
-            <div style="overflow-y: auto; max-height: 700px;">
+            <div style="overflow-y: auto; max-height: 660px; text-wrap: nowrap;">
                 <table>
                     <thead>
                         <tr>
@@ -119,7 +128,17 @@ const openDescModal = (order) =>
     <td>{{ o.distanceKm || '-' }}</td>
     <td>{{ o.weight }}</td>
     <td>{{ o.user?.numberphone ?? '-' }}</td>
-    <td><span class="status">{{ o.status || '-'}}</span></td>
+    <td> <span 
+    class="status"
+    :class="{
+      waiting: o.status === 'Ожидает',
+      progress: o.status === 'Выполняется',
+      done: o.status === 'Доставлено',
+      cancel: o.status === 'Отменено'
+    }"
+  >
+    {{ o.status }}
+  </span></td>
     <td>
         <div style="display: flex; flex-direction: row; gap: 5px;">
             <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
@@ -139,7 +158,7 @@ const openDescModal = (order) =>
     <p>Изменить статус #1</p>
     <p>Новый статус</p>
     <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">В обработке</option>
+      <option value="Ожидает">В ожидании</option>
       <option value="Выполняется">Выполняется</option>
       <option value="Доставлено">Доставлено</option>
       <option value="Отменено">Отменено</option>
@@ -163,6 +182,25 @@ const openDescModal = (order) =>
 
 <style>
 
+.waiting {
+  background-color: gray;
+  color: white;
+}
+
+.progress {
+  background-color: orange;
+  color: white;
+}
+
+.done {
+  background-color: green;
+  color: white;
+}
+
+.cancel {
+  background-color: red;
+  color: white;
+}
  hr{
     width: 340px;
  }
