@@ -117,7 +117,7 @@ const initials = computed(() => {
               <div class="typeauto">
                 <h2>Статусы заявок</h2>
                 <div class="statuses" style="font-size: 20px; gap: 30px;">
-                  <p style="background-color: gray;">В ожидании</p>
+                  <p style="background-color: gray;">Ожидает</p>
                   <p style="background-color: orange;">Выполняется</p>
                   <p style="background-color: green;">Доставлено</p>
                   <p style="background-color: red;">Отменено</p>

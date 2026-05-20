@@ -19,7 +19,7 @@ onMounted(async () =>
   const response = await fetch(
     `http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
     const data = await response.json()
-  orders.value = data
+     orders.value = data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено')
   console.log(data)
 })
 
@@ -40,7 +40,8 @@ const cancel = async (orderId) =>
 })
   const userID = parseInt(localStorage.getItem('userId'))
   const res = await fetch(`http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
-  orders.value = await res.json()
+  const data = await res.json()
+  orders.value = data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено')
  
   
 }

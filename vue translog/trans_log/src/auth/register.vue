@@ -11,9 +11,14 @@ const logintxt = ref('')
 const passwordtxt = ref('')
 const numberphone = ref('')
 const error = ref('')
+const messageError = ref('')
 const fullname = computed(() => `${surnametxt.value} ${nametxt.value} ${otchestvo.value}`)
 const register = async () => 
 {
+    if (!surnametxt.value || !nametxt.value || !logintxt.value || !passwordtxt.value || !numberphone.value) {
+    messageError.value = 'Заполните все поля!'
+    return
+  }
     const response = await fetch(
         `http://localhost:5095/api/User/register`,
         {
@@ -40,6 +45,12 @@ const register = async () =>
     }
     console.log(data)
 }
+const handlePhoneFocus = () => {
+if (!numberphone.value) numberphone.value = '+7'
+setTimeout(() => {
+    e.target.setSelectionRange(e.target.value.length, e.target.value.length)
+  }, 0)
+}
 </script>
 
 <template>
@@ -54,11 +65,11 @@ const register = async () =>
             <div class="divhorizontal">
                 <div class="div1">
                     <p class="textinput">Фамилия</p>
-                    <input class="inputmini" v-model="surnametxt" placeholder="Иванов" type="text" required>
+                    <input class="inputmini" v-model="surnametxt" placeholder="Иванов" type="text" >
                 </div>
                 <div class="div1">
                     <p class="textinput">Имя</p>
-                    <input class="inputmini" v-model="nametxt"  placeholder="Иван" type="text" required>
+                    <input class="inputmini" v-model="nametxt"  placeholder="Иван" type="text" >
                 </div>
             </div>
             <div class="divhorizontal">
@@ -68,17 +79,18 @@ const register = async () =>
                 </div> 
                     <div class="div1">
                         <p class="textinput">Номер телефона</p>
-                        <input type="text" class="inputmini" v-model="numberphone" placeholder="+7 (900) 321-67-52">
+                       <input type="text" class="inputmini" v-model="numberphone" placeholder="+7 (900) 321-67-52" maxlength="12" @focus="handlePhoneFocus">
                     </div>
 
             </div>
             
               <p class="textinput">Данные для входа</p>
               <p class="textinput">Логин</p>
-            <input placeholder="Придумайте логин" v-model="logintxt" type="text"  required>
+            <input placeholder="Придумайте логин" v-model="logintxt" type="text"  >
             <p class="textinput">Пароль</p>
             <input placeholder="***********" v-model="passwordtxt" type="password">
             <button type="submit">Регистрация</button>
+            <p v-if="messageError" style="color: red; font-size: 14px; margin-bottom: 0px;">{{ messageError }}</p>
             <a id="noaccount" @click="$router.push('/authorization')" >Есть аккаунт? Войдите</a>
         </form>
     </div>

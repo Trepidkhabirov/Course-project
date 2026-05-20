@@ -17,8 +17,16 @@ const tripData = ref({
   arrivalDate: ''
 })
 
+const errorMessage = ref('')
 const saveTrip = async () =>
 {
+   if (!tripData.value.vehicleId || !tripData.value.departureDate || !tripData.value.arrivalDate || !tripData.value.distance_km) {
+    errorMessage.value = 'Заполните все поля!'
+    setTimeout(() => {
+      errorMessage.value = ''
+}, 5000)
+    return
+  }
   const response = await fetch(
     `http://localhost:5095/api/Order/UpdateOrder?OrderId=${currentOrder.value.orderId}`,
     {
@@ -37,7 +45,7 @@ const saveTrip = async () =>
   console.log(data)
   showTripModal.value = false
   const res = await fetch('http://localhost:5095/api/Order/GetOrder')
-  orders.value = await res.json()
+orders.value = sortOrders(await res.json())
 }
 
 const openTripModal = (order) => {
@@ -56,12 +64,12 @@ const openTripModal = (order) => {
   console.log('DistanceKm:', order.distanceKm)
   showTripModal.value = true
 }
-const selectedDriverName = computed(() => {
-  if (!tripData.value.vehicleId) return ''
-  const vehicle = vehicles.value.find(v => v.vehicleId === tripData.value.vehicleId)
-  if (!vehicle || !vehicle.drivers?.[0]?.user) return 'Водитель не привязан'
-  return vehicle.drivers[0].user.fullName
-})
+  const selectedDriverName = computed(() => {
+    if (!tripData.value.vehicleId) return ''
+    const vehicle = vehicles.value.find(v => v.vehicleId === tripData.value.vehicleId)
+    if (!vehicle || !vehicle.drivers?.[0]?.user) return 'Водитель не привязан'
+    return vehicle.drivers[0].user.fullName
+  })
 
 const departurepoint = ref('')
 const arrivalpoint = ref('')
@@ -77,7 +85,7 @@ onMounted(async () => {
   const response = await fetch(
     `http://localhost:5095/api/Order/GetOrder`)
     const data = await response.json()
-  orders.value = data
+  orders.value = sortOrders(data)
   console.log(data)
   const response2 = await fetch('http://localhost:5095/api/Driver/GetDrivers')
   drivers.value = await response2.json()
@@ -112,7 +120,7 @@ const saveStatus = async () =>
   )
   showStatusModal.value = false
   const res = await fetch('http://localhost:5095/api/Order/GetOrder')
-  orders.value = await res.json()
+  orders.value = sortOrders(await res.json())
 }
 const fullname = localStorage.getItem('fullname')
 
@@ -130,6 +138,18 @@ const initials = computed(() => {
     .join('')
     .toUpperCase()
 })
+
+const statusOrder = { 'Ожидает': 0, 'Выполняется': 1, 'Доставлено': 2, 'Отменено': 3 }
+
+const sortOrders = (data) => {
+  return data.sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
+}
+
+const today = new Date().toISOString().split('T')[0]  
+const availableVehicles = computed(() => 
+  vehicles.value.filter(v => v.drivers && v.drivers.length > 0)
+)
+
 
 </script>
 <template>
@@ -248,8 +268,8 @@ const initials = computed(() => {
       <div class="simple-field">
         <label>Выберите транспорт</label>
         <select v-model="tripData.vehicleId" class="simple-select">
-          <option value="Выберите транспорт"></option>
-          <option v-for="v in vehicles" :key="v.vehicleId" :value="v.vehicleId">
+          <option value="Выберите транспорт"></option> 
+          <option v-for="v in availableVehicles" :key="v.vehicleId" :value="v.vehicleId">
             {{ v.brand }} {{ v.model }} {{ v.licensePlate }}
           </option>
         </select>
@@ -274,17 +294,18 @@ const initials = computed(() => {
     <div class="simple-row">
       <div class="simple-field">
         <label>Дата отправления</label>
-        <input type="date" v-model="tripData.departureDate">
+        <input type="date" v-model="tripData.departureDate" :min="today">
       </div>
       <div class="simple-field">
         <label>Дата прибытия</label>
-        <input type="date" v-model="tripData.arrivalDate">
+        <input type="date" v-model="tripData.arrivalDate" :min="today">
       </div>
     </div>
     
     <div class="simple-field">
       <label>Длина маршрута (км)</label>
       <input type="number" v-model="tripData.distance_km">
+      <p style="color: red; font-size: 14px;" v-if="errorMessage"  > {{ errorMessage }}</p>
     </div>
     
     <div class="simple-buttons">
@@ -299,7 +320,7 @@ const initials = computed(() => {
     <p>Изменить статус #1</p>
     <p>Новый статус</p>
     <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">В обработке</option>
+      <option value="Ожидает">Ожидает</option>
       <option value="Выполняется">Выполняется</option>
       <option value="Доставлено">Доставлено</option>
       <option value="Отменено">Отменено</option>

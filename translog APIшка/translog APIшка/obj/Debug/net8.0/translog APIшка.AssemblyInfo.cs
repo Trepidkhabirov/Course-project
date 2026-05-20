@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("translog APIшка")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4f7eb4cec54e3a85ceb3ef75f5b3033ba527654")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+839d44e3fea1f4eb5c067d17582c1ef51e3dd63b")]
 [assembly: System.Reflection.AssemblyProductAttribute("translog APIшка")]
 [assembly: System.Reflection.AssemblyTitleAttribute("translog APIшка")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

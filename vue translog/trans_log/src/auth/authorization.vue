@@ -7,8 +7,13 @@ const router = useRouter()
 const logintxt = ref('')
 const passwordtxt = ref('')
 const error = ref('')
+const messageError = ref('')
 const auth = async () => 
-{
+{   
+       if (!logintxt.value || !passwordtxt.value) {
+    messageError.value = 'Заполните все поля!'
+    return
+  }
     const response = await fetch(
         `http://localhost:5095/api/User/login?login=${logintxt.value}&password=${passwordtxt.value}`
     )
@@ -52,12 +57,13 @@ const auth = async () =>
                 <p id="uchet">УЧЕТ ЗАЯВОК НА ГРУЗПЕРЕВОЗКИ</p>
                 <hr>
                 <p class="textinput">Логин</p>
-                <input placeholder="Введите логин" v-model="logintxt" type="text"  required>
+                <input placeholder="Введите логин" v-model="logintxt" type="text"  >
                 <p class="textinput">Пароль</p>
                 <input placeholder="*********" v-model="passwordtxt" type="password">
               <p v-if="error" style="color: red;">{{ error }}</p>
               <a id="noaccount" @click="$router.push('/register')">Нет аккаунта?</a>
             <button type="submit">Войти</button>
+              <p v-if="messageError" style="color: red; font-size: 14px; margin-bottom: 0px;">{{ messageError }}</p>
         </form>
     </div>
 </div>
