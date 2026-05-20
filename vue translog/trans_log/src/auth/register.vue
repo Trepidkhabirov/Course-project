@@ -128,7 +128,6 @@ const handlePhoneInput = (event) => {
                     </div>
 
             </div>
-            
               <p class="textinput">Данные для входа</p>
               <p class="textinput">Логин</p>
             <input placeholder="Придумайте логин" v-model="logintxt" type="text"  >

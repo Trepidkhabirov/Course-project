@@ -105,6 +105,17 @@ public class VehicleController : ControllerBase
         db.SaveChanges();
         return Ok(new { message = "Машина обновлена!" });
     }
+    [HttpDelete("DeleteTransport")]
+    public IActionResult DeleteTransport(int vehicleId)
+    {
+        var db = new TransLogCourseContext();
+        var vehicle = db.Vehicles.FirstOrDefault(v => v.VehicleId == vehicleId);
+        if (vehicle == null)
+            return NotFound(new { message = "Машина не найдена!" });
+        db.Vehicles.Remove(vehicle);
+        db.SaveChanges();
+        return Ok(new { message = "Машина удалена!" });
+    }
 }
 
 public class VehicleModel

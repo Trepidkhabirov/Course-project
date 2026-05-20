@@ -37,38 +37,31 @@ const openUserModal = (user) => {
   selectedUser.value = user
 showUsermodal.value = true
 }
-const saveUser = async () =>
-{
-   if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
+const saveUser = async () => {
+  if (!selectedUser.value.fullName || !selectedUser.value.username || !selectedUser.value.numberphone) {
     message.value = 'Заполните все поля!'
-    setTimeout(() => {
-      message.value = ''
-}, 5000)
-return
+    setTimeout(() => { message.value = '' }, 5000)
+    return
   }
-  const phoneRegex = /^\+7\d{10}$/
-    if (!phoneRegex.test(numberphone.value)) {
-        messageError.value = 'Введите корректный номер телефона'
-        setTimeout(() => {
-            messageError.value = ''
-        }, 5000)
-        return
-    }
-  const response = await fetch(
-    `http://localhost:5095/api/User/UpdateUser`,
-    {
-      method: "PUT",
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        userId: selectedUser.value.userId,
-        fullName: selectedUser.value.fullName,
-        username: selectedUser.value.username,
-        numberphone: selectedUser.value.numberphone,
-        roleId: selectedUser.value.roleId
-      })
-    }
-  )
+  const digits = selectedUser.value.numberphone.replace(/\D/g, '')
+  if (digits.length !== 11) {
+    message.value = 'Введите корректный номер телефона!'
+    setTimeout(() => { message.value = '' }, 5000)
+    return
+  }
+  const response = await fetch(`http://localhost:5095/api/User/UpdateUser`, {
+    method: "PUT",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: selectedUser.value.userId,
+      fullName: selectedUser.value.fullName,
+      username: selectedUser.value.username,
+      numberphone: selectedUser.value.numberphone,
+      roleId: selectedUser.value.roleId
+    })
+  })
   showUsermodal.value = false
+  await loadUsers()
 }
 
 const deleteuser = async (user) =>
@@ -107,55 +100,40 @@ const openShowAddUser = (user) =>
 {
     showAddUser.value = true
 }
-const Adduser = async () =>
-{
-   if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
+const Adduser = async () => {
+  if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
     message.value = 'Заполните все поля!'
-    setTimeout(() => {
-      message.value = ''
-}, 5000)
-return
+    setTimeout(() => { message.value = '' }, 5000)
+    return
   }
-       const phoneRegex = /^\+7\d{10}$/
-    if (!phoneRegex.test(numberphone.value)) {
-        messageError.value = 'Введите корректный номер телефона'
-        setTimeout(() => {
-            messageError.value = ''
-        }, 5000)
-        return
-    }
-  const response = await fetch(
-    `http://localhost:5095/api/User/register`,
-    {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-   username: newUser.value.username,
+  const digits = newUser.value.numberphone.replace(/\D/g, '')
+  if (digits.length !== 11) {
+    message.value = 'Введите корректный номер телефона!'
+    setTimeout(() => { message.value = '' }, 5000)
+    return
+  }
+  const response = await fetch(`http://localhost:5095/api/User/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: newUser.value.username,
       password: newUser.value.password,
       roleId: newUser.value.roleId,
       fullname: newUser.value.fullName,
       numberphone: newUser.value.numberphone,
       isActive: 1
-}
-)
+    })
   })
-    const data = await response.json()
-    if (response.ok)
-  {
-
+  const data = await response.json()
+  if (response.ok) {
     await loadUsers()
-    newUser.value = {
-      fullName: '',
-      username: '',
-      numberphone: '',
-      roleId: 4,
-      password: ''
-    }
+    newUser.value = { fullName: '', username: '', numberphone: '', roleId: 4, password: '' }
     message.value = data.message
-      setTimeout(() => {
-      message.value = ''
-}, 10000)
+    setTimeout(() => { message.value = '' }, 5000)
     showAddUser.value = false
+  } else {
+    message.value = data.message
+    setTimeout(() => { message.value = '' }, 5000)
   }
 }
 const initials = computed(() => {
@@ -168,32 +146,18 @@ const initials = computed(() => {
     .toUpperCase()
 })
 
-const handlePhoneFocus = (event) => {
-    if (!numberphone.value || numberphone.value === '') {
-        numberphone.value = '+7'
-    }
-    setTimeout(() => {
-        if (event.target) {
-            event.target.setSelectionRange(event.target.value.length, event.target.value.length)
-        }
-    }, 0)
+const handlePhoneFocus = (e) => {
+  if (!e.target.value) e.target.value = '+7'
+  setTimeout(() => e.target.setSelectionRange(e.target.value.length, e.target.value.length), 0)
 }
 
-const handlePhoneInput = (event) => {
-    let value = event.target.value
-    
-    if (!value.startsWith('+7')) {
-        numberphone.value = '+7'
-        return
-    }
-    
-    let cleaned = '+7' + value.slice(2).replace(/[^0-9]/g, '')
-    
-    if (cleaned.length > 12) {
-        cleaned = cleaned.slice(0, 12)
-    }
-    
-    numberphone.value = cleaned
+const handlePhoneInput = (e) => {
+  let val = e.target.value
+  if (!val.startsWith('+7')) val = '+7'
+  val = '+7' + val.slice(2).replace(/\D/g, '')
+  if (val.length > 12) val = val.slice(0, 12)
+  if (showUsermodal.value) selectedUser.value.numberphone = val
+  else newUser.value.numberphone = val
 }
 </script>
 <template>
@@ -331,7 +295,7 @@ v-if="message"
     <div class="simple-row">
       <div class="simple-field">
         <label>Номер телефона</label>
-        <input placeholder="Введите номер телефона" v-model="newUser.numberphone" >
+        <input v-model="newUser.numberphone" placeholder="+7 (900) 321-67-52" maxlength="12" @focus="handlePhoneFocus" @input="handlePhoneInput">
       </div>
       <div class="simple-field">
         <label>Роль</label>

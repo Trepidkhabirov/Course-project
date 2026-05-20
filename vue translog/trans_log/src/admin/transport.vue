@@ -77,6 +77,7 @@ const addTransport = async () => {
   showAddTransport.value = false
   await loadTransports()
 
+
 }
 
 
@@ -117,6 +118,13 @@ const initials = computed(() => {
     .join('')
     .toUpperCase()
 })
+
+const deleteTransport = async (vehicle) => {
+  await fetch(`http://localhost:5095/api/Vehicle/DeleteTransport?vehicleId=${vehicle.vehicleId}`, {
+    method: 'DELETE'
+  })
+  await loadTransports()
+}
 
 </script>
 <template>
@@ -162,7 +170,7 @@ const initials = computed(() => {
           <h2 id="titleorder" style="margin-top: -30px;">Транспортные средства</h2>
           <button  class="simple-save" style="height: 40px; width: 200px; font-size: 18px;" @click="showAddTransport = true">Добавить</button>
         </div>
-        <div style="overflow-y: auto; max-height: 680px;" >
+        <div style="overflow-y: auto; max-height: 680px; text-wrap: nowrap;" >
           <table>
             <thead>
               <tr>
@@ -185,6 +193,7 @@ const initials = computed(() => {
                 <td>
                   <div style="display: flex; flex-direction: row; gap: 5px;">
                     <button class="manbtn" @click="openEditTransport(t)">Изменить</button>
+                      <button class="manbtn" @click="deleteTransport(t)" style="background-color: red;">Удалить</button>  
                   </div>
                 </td>
               </tr>
