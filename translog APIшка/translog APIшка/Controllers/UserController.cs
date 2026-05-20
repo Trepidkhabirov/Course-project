@@ -105,22 +105,27 @@
      }
 
      [HttpDelete("DeleteUser")]
-     public IActionResult DeleteUser(string userId)
+     public IActionResult DeleteUser(int userId)
      {
          var db = new TransLogCourseContext();
-         if (!ModelState.IsValid)
-             return BadRequest(ModelState);
-         var users = db.Users.FromSqlRaw($"select * from users where user_id = '{userId}'").ToList();
-         if (users.Count() == 0)
-         {
-             return BadRequest(new { message = "Такого пользователя нету!" });
-         }
-         db.Users.RemoveRange(users);
+
+         var user = db.Users.FirstOrDefault(u => u.UserId == userId);
+
+         if (user == null)
+             return BadRequest(new { message = "Пользователь не найден!" });
+
+         var orders = db.Orders.Where(o => o.UserId == userId).ToList();
+         db.Orders.RemoveRange(orders);
+
+         var drivers = db.Drivers.Where(d => d.UserId == userId).ToList();
+         db.Drivers.RemoveRange(drivers);
+
+         db.Users.Remove(user);
+
          db.SaveChanges();
-         return Ok(new { message = "Пользователь удален" });
 
+         return Ok(new { message = "Пользователь удалён" });
      }
-
      [HttpPut("UpdateUser")]
      public IActionResult updateUser(UpdateUserModel model)
      {

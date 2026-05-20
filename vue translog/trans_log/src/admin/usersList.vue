@@ -12,6 +12,7 @@ const selectedUser = ref(null)
 const users = ref([])
 const role = ref('')
 
+const message = ref('')
 const fullname = localStorage.getItem('fullname')
 
 const loadUsers = async () => {
@@ -38,6 +39,21 @@ showUsermodal.value = true
 }
 const saveUser = async () =>
 {
+   if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
+    message.value = 'Заполните все поля!'
+    setTimeout(() => {
+      message.value = ''
+}, 5000)
+return
+  }
+  const phoneRegex = /^\+7\d{10}$/
+    if (!phoneRegex.test(numberphone.value)) {
+        messageError.value = 'Введите корректный номер телефона'
+        setTimeout(() => {
+            messageError.value = ''
+        }, 5000)
+        return
+    }
   const response = await fetch(
     `http://localhost:5095/api/User/UpdateUser`,
     {
@@ -62,7 +78,15 @@ const deleteuser = async (user) =>
     {
       method: "DELETE"
     }
-  )
+  ) 
+  
+  if (response.ok) {
+    message.value = 'Пользователь удалён'
+
+    setTimeout(() => {
+      message.value = ''
+    }, 5000)
+  }
   await loadUsers()
 }
 
@@ -83,16 +107,23 @@ const openShowAddUser = (user) =>
 {
     showAddUser.value = true
 }
-
 const Adduser = async () =>
 {
    if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
-    messsage.value = 'Заполните все поля!'
+    message.value = 'Заполните все поля!'
     setTimeout(() => {
       message.value = ''
 }, 5000)
 return
   }
+       const phoneRegex = /^\+7\d{10}$/
+    if (!phoneRegex.test(numberphone.value)) {
+        messageError.value = 'Введите корректный номер телефона'
+        setTimeout(() => {
+            messageError.value = ''
+        }, 5000)
+        return
+    }
   const response = await fetch(
     `http://localhost:5095/api/User/register`,
     {
@@ -136,6 +167,34 @@ const initials = computed(() => {
     .join('')
     .toUpperCase()
 })
+
+const handlePhoneFocus = (event) => {
+    if (!numberphone.value || numberphone.value === '') {
+        numberphone.value = '+7'
+    }
+    setTimeout(() => {
+        if (event.target) {
+            event.target.setSelectionRange(event.target.value.length, event.target.value.length)
+        }
+    }, 0)
+}
+
+const handlePhoneInput = (event) => {
+    let value = event.target.value
+    
+    if (!value.startsWith('+7')) {
+        numberphone.value = '+7'
+        return
+    }
+    
+    let cleaned = '+7' + value.slice(2).replace(/[^0-9]/g, '')
+    
+    if (cleaned.length > 12) {
+        cleaned = cleaned.slice(0, 12)
+    }
+    
+    numberphone.value = cleaned
+}
 </script>
 <template>
   <div class="layout">
@@ -206,8 +265,19 @@ const initials = computed(() => {
             </tbody>
           </table>
         </div>
-        <p style="color: black; margin-top: 40px; font-size: 16px" v-if="message">Удален</p>
-        </div>
+        <p
+style="
+  color: green;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 15px;
+"
+v-if="message"
+>
+{{ message }}
+</p>
+      </div>
     </div>
   </div>
   <div v-if="showUsermodal" class="simple-modal">
@@ -224,7 +294,7 @@ const initials = computed(() => {
     </div>
     <div class="simple-field">
       <label>Номер телефона</label>
-      <input v-model="selectedUser.numberphone">
+      <input v-model="selectedUser.numberphone" placeholder="+7 (900) 321-67-52" maxlength="12" @focus="handlePhoneFocus" @input="handlePhoneInput">
     </div>
     <div class="simple-field">
       <label>Роль</label>

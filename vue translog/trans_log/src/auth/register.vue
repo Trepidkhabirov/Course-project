@@ -2,7 +2,7 @@
 import router from '@/router';
 import logo from '../assets/images/logo.png'
 import './register.css'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const surnametxt = ref('')
 const nametxt = ref('')
@@ -13,12 +13,35 @@ const numberphone = ref('')
 const error = ref('')
 const messageError = ref('')
 const fullname = computed(() => `${surnametxt.value} ${nametxt.value} ${otchestvo.value}`)
+watch(numberphone, (newValue, oldValue) => {
+  if (!newValue.startsWith('+7')) {
+    numberphone.value = '+7' + newValue.replace(/[^0-9]/g, '')
+  }
+  
+  let cleaned = '+7' + newValue.slice(2).replace(/[^0-9]/g, '')
+  
+  if (cleaned.length > 12) {
+    cleaned = cleaned.slice(0, 12)
+  }
+  
+  if (cleaned !== newValue) {
+    numberphone.value = cleaned
+  }
+})
 const register = async () => 
 {
     if (!surnametxt.value || !nametxt.value || !logintxt.value || !passwordtxt.value || !numberphone.value) {
     messageError.value = 'Заполните все поля!'
     return
   }
+      const phoneRegex = /^\+7\d{10}$/
+    if (!phoneRegex.test(numberphone.value)) {
+        messageError.value = 'Введите корректный номер телефона'
+        setTimeout(() => {
+            messageError.value = ''
+        }, 5000)
+        return
+    }
     const response = await fetch(
         `http://localhost:5095/api/User/register`,
         {
@@ -41,15 +64,37 @@ const register = async () =>
     }
     else
     {
-        error.value = data.message
+        messageError.value = data.message
     }
     console.log(data)
 }
-const handlePhoneFocus = () => {
-if (!numberphone.value) numberphone.value = '+7'
-setTimeout(() => {
-    e.target.setSelectionRange(e.target.value.length, e.target.value.length)
-  }, 0)
+
+const handlePhoneFocus = (event) => {
+    if (!numberphone.value || numberphone.value === '') {
+        numberphone.value = '+7'
+    }
+    setTimeout(() => {
+        if (event.target) {
+            event.target.setSelectionRange(event.target.value.length, event.target.value.length)
+        }
+    }, 0)
+}
+
+const handlePhoneInput = (event) => {
+    let value = event.target.value
+    
+    if (!value.startsWith('+7')) {
+        numberphone.value = '+7'
+        return
+    }
+    
+    let cleaned = '+7' + value.slice(2).replace(/[^0-9]/g, '')
+    
+    if (cleaned.length > 12) {
+        cleaned = cleaned.slice(0, 12)
+    }
+    
+    numberphone.value = cleaned
 }
 </script>
 
@@ -79,7 +124,7 @@ setTimeout(() => {
                 </div> 
                     <div class="div1">
                         <p class="textinput">Номер телефона</p>
-                       <input type="text" class="inputmini" v-model="numberphone" placeholder="+7 (900) 321-67-52" maxlength="12" @focus="handlePhoneFocus">
+                       <input type="text" class="inputmini" v-model="numberphone" placeholder="+7 (900) 321-67-52" maxlength="12" @focus="handlePhoneFocus" @input="handlePhoneInput">
                     </div>
 
             </div>

@@ -140,7 +140,7 @@ const initials = computed(() => {
     {{ o.status }}
   </span></td>
     <td>
-        <div style="display: flex; flex-direction: row; gap: 5px;">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
             <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
             <button class="manbtn" @click="openDescModal(o)" >Описание</button>  
         </div>
