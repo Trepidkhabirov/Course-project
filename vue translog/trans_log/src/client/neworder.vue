@@ -49,7 +49,7 @@ return
         Weight: parseFloat(weight.value),
         Volumem3: parseFloat(volumem3.value),
         Description: description.value,
-        Status: 'Ожидает',
+        Status: 'Ожидание',
         ReceivedAt: new Date().toISOString()
       })
     }

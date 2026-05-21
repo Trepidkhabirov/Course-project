@@ -33,7 +33,7 @@ const saveTrip = async () =>
       method: "PUT",
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({
-        Status: 'Выполняется',
+        Status: 'Ожидание оплаты',
         DepartureTime: tripData.value.departureDate,
         ArrivalTime: tripData.value.arrivalDate,
         vehicleId: tripData.value.vehicleId,
@@ -128,7 +128,7 @@ const fullname = localStorage.getItem('fullname')
 const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
 const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
-const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает оплаты').length)
 const initials = computed(() => {
   if (!fullname) return ''
 

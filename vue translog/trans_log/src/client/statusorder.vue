@@ -121,7 +121,8 @@ const initials = computed(() => {
                     <span 
     class="status"
     :class="{
-      waiting: order.status === 'Ожидает',
+      waiting: order.status === 'Ожидание',
+      waitiingpaying: order.status === 'Ждёт оплаты',
       progress: order.status === 'Выполняется',
       done: order.status === 'Доставлено',
       cancel: order.status === 'Отменено'
