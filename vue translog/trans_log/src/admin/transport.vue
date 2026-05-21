@@ -54,9 +54,18 @@ const newTransport = ref({
   vehicleTypeId: null,
   userId: null
 })
+const errorModalmessage = ref('')
+const message = ref('')
 const addTransport = async () => {
-  if (!newTransport.value.licensePlate || !newTransport.value.brand || !newTransport.value.model) {
-    alert('Заполните обязательные поля!')
+  if (!newTransport.value.licensePlate || !newTransport.value.brand || !newTransport.value.model || !newTransport.value.payloadKg || !newTransport.value.volumeM3) {
+    errorModalmessage.value = 'Заполните поля!'
+      setTimeout(() => { errorModalmessage.value = '' }, 5000)
+    return
+  }
+    if (!newTransport.value.vehicleTypeId)
+  {
+     errorModalmessage.value = 'Выберите тип транспорта!'
+      setTimeout(() => { errorModalmessage.value = '' }, 5000)
     return
   }
   await fetch(`http://localhost:5095/api/Vehicle/AddTransport`, {
@@ -64,6 +73,9 @@ const addTransport = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newTransport.value)
   })
+    errorModalmessage.value = ''
+      message.value = 'Транспорт успешно добавлен!' 
+    setTimeout(() => { message.value = '' }, 5000)
   newTransport.value = 
 {
     licensePlate: '',
@@ -100,12 +112,26 @@ const openEditTransport = (vehicle) =>
 }
 const saveTransport = async () => 
 {
+    if (!editTransport.value.licensePlate || !editTransport.value.brand || !editTransport.value.model || !editTransport.value.payloadKg || !editTransport.value.volumeM3 ){
+    errorModalmessage.value = 'Заполните поля!'
+      setTimeout(() => { errorModalmessage.value = '' }, 5000)
+    return
+  }
+  if (!editTransport.value.vehicleTypeId)
+  {
+     errorModalmessage.value = 'Выберите тип транспорта!'
+      setTimeout(() => { errorModalmessage.value = '' }, 5000)
+    return
+  }
    await fetch(`http://localhost:5095/api/Vehicle/UpdateTransport?vehicleId=${editTransport.value.vehicleId}`,
    {
      method: 'PUT',
      headers: { 'Content-Type': 'application/json' },
      body: JSON.stringify(editTransport.value)
     })
+        errorModalmessage.value = ''
+          message.value = 'Транспорт успешно изменен!' 
+    setTimeout(() => { message.value = '' }, 5000)
     showEditTransport.value = false
     await loadTransports()
 }
@@ -123,6 +149,8 @@ const deleteTransport = async (vehicle) => {
   await fetch(`http://localhost:5095/api/Vehicle/DeleteTransport?vehicleId=${vehicle.vehicleId}`, {
     method: 'DELETE'
   })
+    message.value = 'Транспорт успешно удален!' 
+    setTimeout(() => { message.value = '' }, 5000)
   await loadTransports()
 }
 
@@ -200,6 +228,18 @@ const deleteTransport = async (vehicle) => {
             </tbody>
             </table>
         </div>
+         <p
+style="
+  color: green;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 15px;
+"
+v-if="message"
+>
+{{ message }}
+</p>  
         </div>
     </div>
   </div>
@@ -253,8 +293,9 @@ const deleteTransport = async (vehicle) => {
 
     <div class="simple-buttons">
       <button class="simple-cancel" @click="showAddTransport = false">Отмена</button>
-      <button class="simple-save" @click="addTransport">Сохранить</button>
+      <button class="simple-save" @click="addTransport">Сохранить</button>      
     </div>
+    <p style="color: red; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-top:5px" v-if="errorModalmessage"  > {{ errorModalmessage }}</p>
   </div>
 </div>
 <div v-if="showEditTransport" class="simple-modal">
@@ -309,6 +350,7 @@ const deleteTransport = async (vehicle) => {
       <button class="simple-cancel" @click="showEditTransport = false">Отмена</button>
       <button class="simple-save" @click="saveTransport">Сохранить</button>
     </div>
+        <p style="color: red; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-top:5px" v-if="errorModalmessage"  > {{ errorModalmessage }}</p>
   </div>
 </div>
 </template>

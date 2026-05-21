@@ -14,7 +14,7 @@ const role = ref('')
 
 const message = ref('')
 const fullname = localStorage.getItem('fullname')
-
+const errorModalmessage = ref('')
 const loadUsers = async () => {
   const response = await fetch(`http://localhost:5095/api/User/GetUser`)
   const data = await response.json()
@@ -39,14 +39,14 @@ showUsermodal.value = true
 }
 const saveUser = async () => {
   if (!selectedUser.value.fullName || !selectedUser.value.username || !selectedUser.value.numberphone) {
-    message.value = 'Заполните все поля!'
-    setTimeout(() => { message.value = '' }, 5000)
+    errorModalmessage.value = 'Заполните все поля!'
+    setTimeout(() => { errorModalmessage.value = '' }, 5000)
     return
   }
   const digits = selectedUser.value.numberphone.replace(/\D/g, '')
   if (digits.length !== 11) {
-    message.value = 'Введите корректный номер телефона!'
-    setTimeout(() => { message.value = '' }, 5000)
+    errorModalmessage.value = 'Введите корректный номер телефона!'
+    setTimeout(() => { errorModalmessage.value = '' }, 5000)
     return
   }
   const response = await fetch(`http://localhost:5095/api/User/UpdateUser`, {
@@ -102,14 +102,14 @@ const openShowAddUser = (user) =>
 }
 const Adduser = async () => {
   if (!newUser.value.fullName || !newUser.value.username || !newUser.value.password || !newUser.value.numberphone) {
-    message.value = 'Заполните все поля!'
-    setTimeout(() => { message.value = '' }, 5000)
+    errorModalmessage.value = 'Заполните все поля!'
+    setTimeout(() => { errorModalmessage.value = '' }, 5000)
     return
   }
   const digits = newUser.value.numberphone.replace(/\D/g, '')
   if (digits.length !== 11) {
-    message.value = 'Введите корректный номер телефона!'
-    setTimeout(() => { message.value = '' }, 5000)
+    errorModalmessage.value = 'Введите корректный номер телефона!'
+    setTimeout(() => { errorModalmessage.value = '' }, 5000)
     return
   }
   const response = await fetch(`http://localhost:5095/api/User/register`, {
@@ -274,6 +274,7 @@ v-if="message"
       <button class="simple-cancel" @click="showUsermodal = false">Отмена</button>
       <button class="simple-save" @click="saveUser">Сохранить</button>
     </div>
+     <p style="color: red; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-top:5px" v-if="errorModalmessage"  > {{ errorModalmessage }}</p>
   </div>
 </div>
 
@@ -317,6 +318,7 @@ v-if="message"
       <button class="simple-cancel" @click="showAddUser = false">Отмена</button>
       <button class="simple-save" @click="Adduser" >Сохранить</button>
     </div>
+    <p style="color: red; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-top:5px" v-if="errorModalmessage"  > {{ errorModalmessage }}</p>
   </div>
 </div>
 

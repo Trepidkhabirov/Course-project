@@ -320,7 +320,8 @@ const availableVehicles = computed(() =>
     <p>Изменить статус #1</p>
     <p>Новый статус</p>
     <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">Ожидает</option>
+      <option value="Ожидает">Ожидание</option>
+      <option value="Ожидание оплаты">Ожидание оплаты</option>
       <option value="Выполняется">Выполняется</option>
       <option value="Доставлено">Доставлено</option>
       <option value="Отменено">Отменено</option>

@@ -30,9 +30,21 @@ const openTypeModal = (vehicle) =>
   selectedType.value = vehicle
   showkmmodal.value = true
 }
-
+const errorMessageModal = ref('')
 const saveType = async () =>
 {
+  if (!selectedType.value.pricePerKm)
+{
+  errorMessageModal.value = 'Заполните поле!'
+   setTimeout(() => { errorMessageModal.value = '' }, 5000)
+    return
+}
+if (selectedType.value.pricePerKm > 9999)
+{
+  errorMessageModal.value = 'Слишком большая цена!'
+    setTimeout(() => { errorMessageModal.value = '' }, 5000)
+  return
+}
   const response = await fetch(
     `http://localhost:5095/api/VehicleType/UpdateType`,
     {
@@ -41,6 +53,8 @@ const saveType = async () =>
       body: JSON.stringify(
         {
            "typeId": selectedType.value.typeId,
+              "name": selectedType.value.name,                    
+       "description": selectedType.value.description,  
            "pricePerKm": selectedType.value.pricePerKm
         }
       )
@@ -111,7 +125,7 @@ const initials = computed(() => {
                   <p style="font-weight: bold; font-size: 22px;">{{ v.name }}</p>
                   <p style="font-size: 16px; text-wrap: nowrap;">Стоимость за 1 км пути: {{ v.pricePerKm }}</p>
                 </div>
-                <button class="simple-save" @click="openTypeModal(v)" style="width: 200px; margin-left: 170px; margin-top: 20px;">Изменить</button>
+                <button class="simple-save" @click="openTypeModal(v)" style="width: 200px; margin-left: 170px; margin-top: 20px; font-size: 18px;">Изменить</button>
               </div>
               </div>
               <div class="typeauto">
@@ -141,12 +155,13 @@ const initials = computed(() => {
 
     <div class="simple-field">
       <label>Цена за 1 км</label>
-      <input v-model="selectedType.pricePerKm">
+      <input v-model.number="selectedType.pricePerKm" type="number" min="0" max="9999">
     </div>
     <div class="simple-buttons">
       <button class="simple-cancel" @click="showkmmodal = false">Отмена</button>
       <button class="simple-save" @click="saveType">Сохранить</button>
     </div>
+    <p v-if="errorMessageModal" style="display:flex; justify-content: center; align-items: center; color: red; font-size: 14px; margin-top: 5px;">{{ errorMessageModal }}</p>
   </div>
 </div>
   </template>
@@ -176,10 +191,16 @@ const initials = computed(() => {
 {
   display: flex;
   flex-direction: row;
+   justify-content: space-between; 
+}
+.title_type
+{
+   flex: 1;
 }
 .title_type p
 {
   color: black;
+   margin: 0; 
 }
 .typeauto {
   background: white;
