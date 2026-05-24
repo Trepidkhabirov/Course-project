@@ -1,7 +1,7 @@
 <script setup>
 import router from '@/router';
 import logo from '../assets/images/logo.png'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import order from '../assets/images/order.png'
 import people from '../assets/images/people.png'
 import transport from '../assets/images/transport.png'
@@ -12,15 +12,44 @@ const tripData = ref({
   vehicleId: null,
   from: '',
   to: '',
-  distance_km: '',
+  distanceKm: 0, 
+  price: 0,
   departureDate: '',
   arrivalDate: ''
 })
+const vehicleRates = {
+  1: 50, 
+  2: 80, 
+}
+
+
+const calculatePrice = () => {
+  const distance = parseFloat(tripData.value.distanceKm)
+  const vehicleId = tripData.value.vehicleId
+  
+  if (distance > 0 && vehicleId) {
+    const selectedVehicle = vehicles.value.find(v => v.vehicleId === vehicleId)
+    
+    if (selectedVehicle) {
+      const rate = selectedVehicle.vehicleType?.costPerKm || vehicleRates[selectedVehicle.vehicleTypeId] || 50
+      
+      tripData.value.price = distance * rate
+      console.log(`Расчет: ${distance} км * тариф ${rate} руб = ${tripData.value.price}`)
+    }
+  } else {
+    tripData.value.price = 0
+  }
+}
+
+watch(() => tripData.value.distanceKm, calculatePrice)
+watch(() => tripData.value.vehicleId, calculatePrice)
+
+
 
 const errorMessage = ref('')
 const saveTrip = async () =>
 {
-   if (!tripData.value.vehicleId || !tripData.value.departureDate || !tripData.value.arrivalDate || !tripData.value.distance_km) {
+   if (!tripData.value.vehicleId || !tripData.value.departureDate || !tripData.value.arrivalDate || !tripData.value.distanceKm) {
     errorMessage.value = 'Заполните все поля!'
     setTimeout(() => {
       errorMessage.value = ''
@@ -33,11 +62,12 @@ const saveTrip = async () =>
       method: "PUT",
       headers: { 'Content-Type': 'application/json'},
       body: JSON.stringify({
-        Status: 'Ожидание оплаты',
+        Status: 'Ожидает оплаты',
         DepartureTime: tripData.value.departureDate,
         ArrivalTime: tripData.value.arrivalDate,
         vehicleId: tripData.value.vehicleId,
-        distance_km: tripData.value.distance_km
+        distanceKm: tripData.value.distanceKm,
+        Price: tripData.value.price 
       })
     }
   )
@@ -54,7 +84,7 @@ const openTripModal = (order) => {
     vehicleId: order.vehicleId || null,
     from: order.departurePoint,
     to: order.arrivalPoint,
-    distance_km: order.distanceKm  || '',
+    distanceKm: order.distanceKm  || 0,
      departureDate: order.departureTime || '',
     arrivalDate: order.arrivalTime || ''
     
@@ -128,7 +158,8 @@ const fullname = localStorage.getItem('fullname')
 const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
 const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
-const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает оплаты').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+const totalpaying = computed(() => orders.value.filter(o => o.status == 'Ожидает оплаты').length)
 const initials = computed(() => {
   if (!fullname) return ''
 
@@ -139,7 +170,14 @@ const initials = computed(() => {
     .toUpperCase()
 })
 
-const statusOrder = { 'Ожидает': 0, 'Выполняется': 1, 'Доставлено': 2, 'Отменено': 3 }
+const statusOrder = { 
+  'Ожидает': 0, 
+  'Принято': 1, 
+  'Ожидает оплаты': 2, 
+  'Выполняется': 3, 
+  'Доставлено': 4, 
+  'Отменено': 5 
+}
 
 const sortOrders = (data) => {
   return data.sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
@@ -213,7 +251,7 @@ const availableVehicles = computed(() =>
             <p class="lab_other">За всё время</p>
           </div>
         </div>
-
+        
         <h3 id="titleorder">Все заявки</h3>
         <div style="overflow-y: auto; max-height: 480px;" >
           <table>
@@ -237,6 +275,8 @@ const availableVehicles = computed(() =>
     class="status"
     :class="{
       waiting: order.status === 'Ожидает',
+      paying: order.status === 'Ожидает оплаты',
+      accepted: order.status === 'Принято',
       progress: order.status === 'Выполняется',
       done: order.status === 'Доставлено',
       cancel: order.status === 'Отменено'
@@ -304,7 +344,9 @@ const availableVehicles = computed(() =>
     
     <div class="simple-field">
       <label>Длина маршрута (км)</label>
-      <input type="number" v-model="tripData.distance_km">
+      <input type="number" v-model.number="tripData.distanceKm">
+         <label>Итоговая стоимость</label>
+      <input type="number" v-model="tripData.price" readonly>
       <p style="color: red; font-size: 14px;" v-if="errorMessage"  > {{ errorMessage }}</p>
     </div>
     
@@ -321,7 +363,8 @@ const availableVehicles = computed(() =>
     <p>Новый статус</p>
     <select v-model="newStatus" class="simple-select">
       <option value="Ожидает">Ожидание</option>
-      <option value="Ожидание оплаты">Ожидание оплаты</option>
+      <option value="Ожидает оплаты">Ожидает оплаты</option>
+      <option value="Принято">Принято</option>
       <option value="Выполняется">Выполняется</option>
       <option value="Доставлено">Доставлено</option>
       <option value="Отменено">Отменено</option>
@@ -357,6 +400,15 @@ th {
   font-size: 16px;
   color: #7a8ba8;
   font-weight: 600;
+}
+
+.paying {
+  background-color: #9b59b6;
+  color: white;
+}
+.accepted {
+  background-color: #3498db; 
+  color: white;
 }
 td {
   padding: 15px;

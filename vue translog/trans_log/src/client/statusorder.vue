@@ -122,7 +122,8 @@ const initials = computed(() => {
     class="status"
     :class="{
       waiting: order.status === 'Ожидание',
-      waitiingpaying: order.status === 'Ждёт оплаты',
+         accepted: order.status === 'Принято',
+        paying: order.status === 'Ожидает оплаты',
       progress: order.status === 'Выполняется',
       done: order.status === 'Доставлено',
       cancel: order.status === 'Отменено'
@@ -132,11 +133,19 @@ const initials = computed(() => {
   </span>
                 </td>
                 <td> <button 
-    v-if="order.status === 'Ожидает'" 
-    @click="cancel(order.orderId)"
+      v-if="order.status === 'Ожидает' || order.status === 'Принято'" 
+      @click="cancel(order.orderId)"
+      class="btn-cancel"
     style="width: 150px; font-size: 14px; height: 40px; background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
     Отменить
-  </button></td>
+  </button>
+<button 
+      v-if="order.status === 'Ожидает оплаты'" 
+      @click="payOrder(order.orderId)"
+      class="btn-pay"  style="width: 150px; font-size: 14px; height: 40px; background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
+      Оплатить
+    </button>
+</td>
               </tr>
             </tbody>
             </table>

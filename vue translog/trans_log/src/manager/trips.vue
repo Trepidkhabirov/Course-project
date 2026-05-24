@@ -107,10 +107,12 @@ const initials = computed(() => {
     <td>{{ order.arrivalTime || '—' }}</td>
     <td>{{ order.distanceKm || '—' }}</td>
     <td>{{ order.weight }}</td>
-    <td> <span 
+    <td>  <span 
     class="status"
     :class="{
-      waiting: order.status === 'Ожидает',
+      waiting: order.status === 'Ожидание',
+         accepted: order.status === 'Принято',
+        paying: order.status === 'Ожидает оплаты',
       progress: order.status === 'Выполняется',
       done: order.status === 'Доставлено',
       cancel: order.status === 'Отменено'
