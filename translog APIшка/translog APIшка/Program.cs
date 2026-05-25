@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

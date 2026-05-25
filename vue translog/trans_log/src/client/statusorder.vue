@@ -70,6 +70,56 @@ const initials = computed(() => {
     .toUpperCase()
 })
 
+const showPaymentModal = ref(false)
+const selectedOrder = ref(null)
+
+function payOrder(orderId) {
+  selectedOrder.value = orders.value.find(o => o.orderId === orderId);
+  showPaymentModal.value = true;
+}
+
+async function confirmPay() {
+  if (!selectedOrder.value) return;
+  await fetch(`http://localhost:5095/api/Order/UpdateOrder?OrderId=${selectedOrder.value.orderId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ Status: 'Принято' })
+  });
+  const userID = parseInt(localStorage.getItem('userId'));
+  const res = await fetch(`http://localhost:5095/api/Order/GetHistory?Userid=${userID}`);
+  const data = await res.json();
+  orders.value = sortOrders(data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено'));
+  showPaymentModal.value = false;
+  selectedOrder.value = null;
+}
+
+function cancelPayModal() {
+  showPaymentModal.value = false
+  selectedOrder.value = null
+}
+
+async function downloadReceipt(orderId) {
+  try {
+    const response = await fetch(`http://localhost:5095/api/Order/GetReceipt?orderId=${orderId}`);
+    if (!response.ok) {
+      alert('Ошибка при скачивании чека');
+      return;
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `check_${orderId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Ошибка при скачивании чека');
+  }
+}
+
+
 </script>
 <template>
   <div class="layout">
@@ -146,19 +196,27 @@ const initials = computed(() => {
     {{ order.status }}
   </span>
                 </td>
-                <td> <button 
-      v-if="order.status === 'Ожидает' || order.status === 'Принято'" 
-      @click="cancel(order.orderId)"
-      class="btn-cancel"
-    style="width: 150px; font-size: 14px; height: 40px; background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
-    Отменить
-  </button>
-<button 
-      v-if="order.status === 'Ожидает оплаты'" 
-      @click="payOrder(order.orderId)"
-      class="btn-pay"  style="width: 150px; font-size: 14px; height: 40px; background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
-      Оплатить
-    </button>
+                <td>
+                <button
+                v-if="order.status === 'Принято'"
+                @click="downloadReceipt(order.orderId)"
+                class="btn-receipt"
+                style="width: 150px; font-size: 14px; height: 40px; background: #2196f3; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer; margin-top: 6px; margin-right: 5px">
+                Скачать чек
+                </button>
+                <button 
+                v-if="order.status === 'Ожидает оплаты'" 
+                @click="payOrder(order.orderId)"
+                class="btn-pay"  style="width: 150px; font-size: 14px; height: 40px; background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer;">
+                Оплатить
+              </button>
+              <button 
+ v-if="order.status === 'Ожидание' || order.status === 'Принято' || order.status === 'Ожидает оплаты'" 
+ @click="cancel(order.orderId)"
+ class="btn-cancel"
+style="width: 150px; font-size: 14px; height: 40px; background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer; margin-left: 5px;">
+Отменить
+</button>
 </td>
               </tr>
             </tbody>
@@ -167,9 +225,62 @@ const initials = computed(() => {
         </div>
     </div>
   </div>
+<div v-if="showPaymentModal && selectedOrder" class="showStatusModal">
+  <div class="modal">
+    <h2 style="font-size:22px;margin-bottom:16px;">Оплата заказа</h2>
+    <div class="simple-field">
+      <label>
+        Откуда:
+        <input type="text" readonly :value="selectedOrder.departurePoint" />
+      </label>
+      <label>
+        Куда:
+        <input type="text" readonly :value="selectedOrder.arrivalPoint" />
+      </label>
+      <label>
+        Объем (м³):
+        <input type="text" readonly :value="selectedOrder.volumeM3 || selectedOrder.volumem3 || ''" />
+      </label>
+        <label>
+        Вес (кг):
+        <input type="text" readonly :value="selectedOrder.weight || selectedOrder.volumem3 || ''" />
+      </label>
+      <label>
+        Дистанция (км):
+        <input type="text" readonly :value="selectedOrder.distanceKm || ''" />
+      </label>
+      <label>
+        Цена (₽):
+        <input type="text" readonly :value="selectedOrder.price || ''" />
+      </label>
+    </div>
+    <div style="margin-top:28px;display:flex;gap:16px;justify-content:flex-end;">
+      <button @click="confirmPay" style="background:#27ae60;color:white;padding:9px 28px;border:none;border-radius:7px;font-size:17px;cursor:pointer;">Оплатить</button>
+      <button @click="cancelPayModal" style="background:#eee;color:#222;padding:9px 20px;border:none;border-radius:7px;font-size:16px;cursor:pointer;">Отменить</button>
+    </div>
+  </div>
+</div>
 </template>
 
 <style >
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0; 
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; 
+}
+
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px 28px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  min-width: 320px;
+}
 
 .status {
   padding: 8px 16px;

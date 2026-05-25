@@ -124,7 +124,6 @@ console.log('drivers:', drivers.value)
 const response3 = await fetch('http://localhost:5095/api/Vehicle/GetTransport')
   vehicles.value = await response3.json()
   console.log('vehicles:', vehicles.value)
-  orders.value = sortOrders(data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено'))
 }
 })
 const logout = () => {
@@ -274,7 +273,7 @@ const availableVehicles = computed(() =>
    <span 
     class="status"
     :class="{
-      waiting: order.status === 'Ожидает',
+      waiting: order.status === 'Ожидание',
       paying: order.status === 'Ожидает оплаты',
       accepted: order.status === 'Принято',
       progress: order.status === 'Выполняется',
@@ -362,7 +361,7 @@ const availableVehicles = computed(() =>
     <p>Изменить статус #1</p>
     <p>Новый статус</p>
     <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">Ожидание</option>
+      <option value="Ожидание">Ожидание</option>
       <option value="Ожидает оплаты">Ожидает оплаты</option>
       <option value="Принято">Принято</option>
       <option value="Выполняется">Выполняется</option>
