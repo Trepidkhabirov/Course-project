@@ -20,7 +20,7 @@ const orders = ref([])
 
 const statusOrder = {
   'Ожидает оплаты': 0,
-  'Ожидает': 1,
+  'Ожидание': 1,
   'Принято': 2,
   'Выполняется': 3,
   'Доставлено': 4,
@@ -50,7 +50,7 @@ const initials = computed(() => {
 const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
 const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
-const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидание').length)
 
 
 </script>

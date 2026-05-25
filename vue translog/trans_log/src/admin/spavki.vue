@@ -130,12 +130,18 @@ const initials = computed(() => {
               </div>
               <div class="typeauto">
                 <h2>Статусы заявок</h2>
-                <div class="statuses" style="font-size: 20px; gap: 30px;">
-                  <p style="background-color: gray;">Ожидает</p>
-                  <p style="background-color: orange;">Выполняется</p>
-                  <p style="background-color: green;">Доставлено</p>
-                  <p style="background-color: red;">Отменено</p>
-                </div>
+                  <div class="statuses" style="display: flex; flex-direction: row; font-size: 20px; gap: 30px;" >
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                      <p style="background-color: gray;">Ожидание</p>
+                      <p style="background-color: #9b59b6;">Ожидает оплаты</p>
+                      <p style="background-color: #3498db;">Принято</p>
+                    </div>
+                      <div style="display: flex; flex-direction: column; gap:10px;">
+                        <p style="background-color: orange;">Выполняется</p>
+                        <p style="background-color: green;">Доставлено</p>
+                        <p style="background-color: red;">Отменено</p>
+                      </div>
+                  </div>
               </div>
             </div>
             <div class="typeauto" style="margin-left: 70px; height: 320px;">

@@ -31,7 +31,7 @@ const calculatePrice = () => {
     const selectedVehicle = vehicles.value.find(v => v.vehicleId === vehicleId)
     
     if (selectedVehicle) {
-      const rate = selectedVehicle.vehicleType?.costPerKm || vehicleRates[selectedVehicle.vehicleTypeId] || 50
+      const rate = selectedVehicle.vehicleType?.pricePerKm || vehicleRates[selectedVehicle.vehicleTypeId] || 50
       
       tripData.value.price = distance * rate
       console.log(`Расчет: ${distance} км * тариф ${rate} руб = ${tripData.value.price}`)
@@ -158,7 +158,7 @@ const fullname = localStorage.getItem('fullname')
 const totalOrders = computed( () => orders.value.length)
 const totalwork = computed (() => orders.value.filter(o => o.status == 'Выполняется').length)
 const totalend = computed (() => orders.value.filter(o => o.status == 'Доставлено').length)
-const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидает').length)
+const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожидание').length)
 const totalpaying = computed(() => orders.value.filter(o => o.status == 'Ожидает оплаты').length)
 const initials = computed(() => {
   if (!fullname) return ''
@@ -171,7 +171,7 @@ const initials = computed(() => {
 })
 
 const statusOrder = { 
-  'Ожидает': 0, 
+  'Ожидание': 0, 
   'Принято': 1, 
   'Ожидает оплаты': 2, 
   'Выполняется': 3, 
@@ -185,7 +185,12 @@ const sortOrders = (data) => {
 
 const today = new Date().toISOString().split('T')[0]  
 const availableVehicles = computed(() => 
-  vehicles.value.filter(v => v.drivers && v.drivers.length > 0)
+  vehicles.value.filter(v => {
+    if (!v.drivers || v.drivers.length === 0) return false
+    if (currentOrder.value?.weight && v.payloadKg < currentOrder.value.weight) return false
+    if (currentOrder.value?.volumeM3 && v.volumeM3 < currentOrder.value.volumeM3) return false
+    return true
+  })
 )
 
 </script>

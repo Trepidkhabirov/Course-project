@@ -107,48 +107,51 @@ const initials = computed(() => {
       <div class="topbar">Мои рейсы</div>
         <div class="card">
             <h2>Мои рейсы</h2>
-            <div style="overflow-y: auto; max-height: 660px; text-wrap: nowrap;">
+            <div style="overflow-x: auto; max-width: 100%;">
+
+              <div style="overflow-y: auto; max-height: 660px; text-wrap: nowrap;">
                 <table>
-                    <thead>
-                        <tr>
-                            <td>Водитель</td>
-                            <td>Маршрут</td>
-                            <td>Отправление → Прибытие</td>
-                            <td>Расстояние (Км)</td>
-                            <td>Груз (Т)</td>
-                            <td>Контакты</td>
-                            <td>Статус</td>
-              </tr>
-            </thead>
-           <tbody>
-  <tr v-for="o in orders" :key="o.orderId">
-    <td>{{ o.vehicle?.drivers?.[0]?.user?.fullName ?? '-' }}</td>
-    <td style="text-wrap: nowrap;">{{ o.departurePoint ?? '-'}}  → {{ o.arrivalPoint }}</td>
-    <td style="text-wrap: nowrap">{{ o.departureTime ? new Date(o.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} → {{ o.arrivalTime ? new Date(o.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
+                  <thead>
+                    <tr>
+                      <td>Водитель</td>
+                      <td>Маршрут</td>
+                      <td>Отправление → Прибытие</td>
+                      <td>Расстояние</td>
+                      <td>Груз (Т)</td>
+                      <td>Контакты</td>
+                      <td>Статус</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="o in orders" :key="o.orderId">
+                      <td>{{ o.vehicle?.drivers?.[0]?.user?.fullName ?? '-' }}</td>
+                      <td style="text-wrap: nowrap;">{{ o.departurePoint ?? '-'}}  → {{ o.arrivalPoint }}</td>
+                      <td style="text-wrap: nowrap">{{ o.departureTime ? new Date(o.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} → {{ o.arrivalTime ? new Date(o.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
     <td>{{ o.distanceKm || '-' }}</td>
     <td>{{ o.weight }}</td>
     <td>{{ o.user?.numberphone ?? '-' }}</td>
     <td> <span 
-    class="status"
-    :class="{
-      waiting: o.status === 'Ожидает',
-      progress: o.status === 'Выполняется',
+      class="status"
+      :class="{
+        waiting: o.status === 'Ожидает',
+        progress: o.status === 'Выполняется',
       done: o.status === 'Доставлено',
       cancel: o.status === 'Отменено'
     }"
   >
     {{ o.status }}
   </span></td>
-    <td>
-        <div style="display: flex; flex-direction: column; gap: 5px;">
-            <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
-            <button class="manbtn" @click="openDescModal(o)" >Описание</button>  
+  <td>
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
+      <button class="manbtn" @click="openDescModal(o)" >Описание</button>  
         </div>
-    </td>
-  </tr>
-</tbody>
-        </table>
-    </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -157,12 +160,10 @@ const initials = computed(() => {
 
     <p>Изменить статус #1</p>
     <p>Новый статус</p>
-    <select v-model="newStatus" class="simple-select">
-      <option value="Ожидает">В ожидании</option>
-      <option value="Выполняется">Выполняется</option>
-      <option value="Доставлено">Доставлено</option>
-      <option value="Отменено">Отменено</option>
-    </select>
+   <select v-model="newStatus" class="simple-select">
+  <option value="Выполняется">Выполняется</option>
+  <option value="Доставлено">Доставлено</option>
+</select>
     <div class="simple-buttons">
       <button class="simple-cancel" @click="showStatusModal = false">Отмена</button>
       <button class="simple-save" @click="saveStatus">Сохранить</button>

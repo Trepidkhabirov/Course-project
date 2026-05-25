@@ -141,11 +141,11 @@ const logout = () => {
         <div class="row">
           <div class="field">
             <label style="font-size: 18px;">Вес груза (тонн)</label>
-            <input type="text" v-model="weight"  placeholder="0.5">
+            <input type="number" v-model="weight" step="0.01" placeholder="0.5">
           </div>
           <div class="field">
             <label style="font-size: 18px;">Объем груза (м2)</label>
-            <input type="text" v-model="volumem3" placeholder="1.0">
+            <input type="number" v-model="volumem3" step="0.01" placeholder="1.0">
           </div>
         </div>
         

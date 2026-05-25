@@ -3,7 +3,7 @@
   using translog_APIшка.Model;
   using translog_APIшка.Services;
   using Order = translog_APIшка.Model.Order;
-
+  
   namespace translog_APIшка.Controllers;
   
   
@@ -118,13 +118,13 @@
       public IActionResult GetReceipt(int orderId)
       {
           var db = new TransLogCourseContext(); 
-
+  
           var order = db.Orders.FirstOrDefault(o => o.OrderId == orderId);
           if (order == null) return NotFound();
-
+  
           var pdfService = new pdfService(); 
           var pdfBytes = pdfService.GenerateReceiptPdf(order);
-
+  
           return File(pdfBytes, "application/pdf", $"check_{orderId}.pdf");
       }
   }

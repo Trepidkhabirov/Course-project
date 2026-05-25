@@ -19,19 +19,22 @@ const loadTransports = async () => {
   const r = await fetch(`http://localhost:5095/api/Vehicle/GetTransport`)
   transports.value = await r.json()
 }
-onMounted(async () => 
-{
+const freeDrivers = ref([])
+
+onMounted(async () => {
     await loadTransports()
+    const r2 = await fetch(`http://localhost:5095/api/VehicleType/GetTypes`)
+    vehicleTypes.value = await r2.json()
 
-  const r2 = await fetch(`http://localhost:5095/api/VehicleType/GetTypes`)
-  vehicleTypes.value = await r2.json()
+    const r3 = await fetch(`http://localhost:5095/api/User/GetUser`)
+    const users = await r3.json()
 
-  const r3 = await fetch(`http://localhost:5095/api/User/GetUser`)
-  const users = await r3.json()
- drivers.value = users.filter(u => u.roleId === 3 && !u.driver?.vehicleId)
+    const r4 = await fetch(`http://localhost:5095/api/Driver/GetDrivers`)
+    const allDrivers = await r4.json()
+    const busyUserIds = new Set(allDrivers.filter(d => d.vehicleId).map(d => d.userId))
+
+    freeDrivers.value = users.filter(u => u.roleId === 3 && !busyUserIds.has(u.userId))
 })
-
-
 const logout = () => {
   localStorage.clear() 
   router.push('/authorization')
@@ -88,6 +91,7 @@ const addTransport = async () => {
 }
   showAddTransport.value = false
   await loadTransports()
+  await reloadFreeDrivers() 
 
 
 }
@@ -134,6 +138,7 @@ const saveTransport = async () =>
     setTimeout(() => { message.value = '' }, 5000)
     showEditTransport.value = false
     await loadTransports()
+    await reloadFreeDrivers() 
 }
 const initials = computed(() => {
   if (!fullname) return ''
@@ -153,6 +158,26 @@ const deleteTransport = async (vehicle) => {
     setTimeout(() => { message.value = '' }, 5000)
   await loadTransports()
 }
+
+const editDrivers = computed(() => {
+  if (!editTransport.value) return freeDrivers.value
+  const currentDriver = transports.value
+    .find(t => t.vehicleId === editTransport.value.vehicleId)
+    ?.drivers?.[0]?.user
+  if (!currentDriver) return freeDrivers.value
+  const alreadyIn = freeDrivers.value.some(d => d.userId === currentDriver.userId)
+  return alreadyIn ? freeDrivers.value : [...freeDrivers.value, currentDriver]
+})
+
+const reloadFreeDrivers = async () => {
+  const r3 = await fetch(`http://localhost:5095/api/User/GetUser`)
+  const users = await r3.json()
+  const r4 = await fetch(`http://localhost:5095/api/Driver/GetDrivers`)
+  const allDrivers = await r4.json()
+  const busyUserIds = new Set(allDrivers.filter(d => d.vehicleId).map(d => d.userId))
+  freeDrivers.value = users.filter(u => u.roleId === 3 && !busyUserIds.has(u.userId))
+}
+
 
 </script>
 <template>
@@ -287,7 +312,7 @@ v-if="message"
       <label>Водитель</label>
       <select v-model="newTransport.userId" class="simple-select">
         <option :value="null">Без водителя</option>
-        <option v-for="d in drivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
+   <option v-for="d in freeDrivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
       </select>
     </div>
 
@@ -342,7 +367,7 @@ v-if="message"
       <label>Водитель</label>
       <select v-model="editTransport.userId" class="simple-select">
         <option :value="null">Без водителя</option>
-        <option v-for="d in drivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
+        <option v-for="d in editDrivers" :key="d.userId" :value="d.userId">{{ d.fullName }}</option>
       </select>
     </div>
 

@@ -83,17 +83,15 @@ const initials = computed(() => {
                             <td>Автомобиль</td>
                             <td>Гос. Номер</td>
                             <td>Груз. Т</td>
-                            <td>Статус</td>
               </tr>
             </thead>
            <tbody>
   <tr v-for="d in drivers" :key="d.driverId">
     <td>{{ d.user?.fullName || '-' }}</td>
   <td>{{ d.vehicle?.vehicleType?.name || '-' }}</td>
-    <td>{{ d.vehicle?.brand || '-'}} {{ d.vehicle.model || '-'}}</td>
-    <td>{{ d.vehicle.licensePlate || '-'}} </td>
-    <td>{{ d.vehicle?.payloadKg/1000 || '-' }}</td>
-    <td><span class="status">{{ d.working || '-'}}</span></td>
+  <td>{{ d.vehicle?.brand || '-'}} {{ d.vehicle?.model || '-'}}</td>
+<td>{{ d.vehicle?.licensePlate || '-'}} </td>
+<td>{{ d.vehicle?.payloadKg ? d.vehicle.payloadKg/1000 : '-' }}</td>
   </tr>
 </tbody>
         </table>

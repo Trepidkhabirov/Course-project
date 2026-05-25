@@ -15,6 +15,7 @@ public class VehicleController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
         var db = new TransLogCourseContext();
         var vehicle = db.Vehicles
             .Include(v => v.Drivers).ThenInclude(v => v.User)
@@ -37,15 +38,16 @@ public class VehicleController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
         var db = new TransLogCourseContext();
         var newVehicle = new Vehicle
         {
-               LicensePlate = model.LicensePlate,
-                Brand = model.Brand,
-                Model = model.Model,
-                PayloadKg = model.PayloadKg,
-                VolumeM3 = model.VolumeM3,
-                VehicleTypeId = model.VehicleTypeId, 
+            LicensePlate = model.LicensePlate,
+            Brand = model.Brand,
+            Model = model.Model,
+            PayloadKg = model.PayloadKg,
+            VolumeM3 = model.VolumeM3,
+            VehicleTypeId = model.VehicleTypeId,
         };
         db.Vehicles.Add(newVehicle);
         db.SaveChanges();
@@ -60,14 +62,15 @@ public class VehicleController : ControllerBase
             {
                 db.Drivers.Add(new Driver
                 {
-                    
+
                     UserId = model.UserId.Value,
                     VehicleId = newVehicle.VehicleId,
-                    Working = "Активен"
                 });
             }
+
             db.SaveChanges();
         }
+
         return Ok(new
         {
             message = "Машина добавлена!",
@@ -82,7 +85,7 @@ public class VehicleController : ControllerBase
         var vehicle = db.Vehicles
             .Include(v => v.Drivers)
             .FirstOrDefault(v => v.VehicleId == vehicleId);
-    
+
         if (vehicle == null)
             return NotFound("Такой машины нету");
 
@@ -99,12 +102,19 @@ public class VehicleController : ControllerBase
             if (driver != null)
                 driver.VehicleId = vehicleId;
             else
-                db.Drivers.Add(new Driver { UserId = model.UserId.Value, VehicleId = vehicleId, Working = "Активен" });
+                db.Drivers.Add(new Driver { UserId = model.UserId.Value, VehicleId = vehicleId });
+        }
+        else
+        {
+            var currentDriver = db.Drivers.FirstOrDefault(d => d.VehicleId == vehicleId);
+            if (currentDriver != null)
+                currentDriver.VehicleId = null;
         }
 
         db.SaveChanges();
         return Ok(new { message = "Машина обновлена!" });
     }
+
     [HttpDelete("DeleteTransport")]
     public IActionResult DeleteTransport(int vehicleId)
     {
@@ -112,6 +122,16 @@ public class VehicleController : ControllerBase
         var vehicle = db.Vehicles.FirstOrDefault(v => v.VehicleId == vehicleId);
         if (vehicle == null)
             return NotFound(new { message = "Машина не найдена!" });
+
+        var drivers = db.Drivers.Where(d => d.VehicleId == vehicleId).ToList();
+        foreach (var d in drivers)
+            d.VehicleId = null;
+
+        var orders = db.Orders.Where(o => o.VehicleId == vehicleId).ToList();
+        foreach (var o in orders)
+            o.VehicleId = null;
+
+        db.SaveChanges();
         db.Vehicles.Remove(vehicle);
         db.SaveChanges();
         return Ok(new { message = "Машина удалена!" });

@@ -13,8 +13,6 @@ public partial class Driver
 
     public int? VehicleId { get; set; }
 
-    public string? Working { get; set; }
-
     public virtual User User { get; set; } = null!;
 
     public virtual Vehicle? Vehicle { get; set; }

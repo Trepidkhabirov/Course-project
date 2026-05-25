@@ -60,9 +60,6 @@ public partial class TransLogCourseContext : DbContext
             entity.Property(e => e.VehicleId)
                 .HasColumnType("int(11)")
                 .HasColumnName("vehicle_id");
-            entity.Property(e => e.Working)
-                .HasMaxLength(45)
-                .HasColumnName("working");
 
             entity.HasOne(d => d.User).WithOne(p => p.Driver)
                 .HasForeignKey<Driver>(d => d.UserId)
