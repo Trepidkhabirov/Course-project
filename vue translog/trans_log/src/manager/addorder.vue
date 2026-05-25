@@ -66,7 +66,7 @@ const saveTrip = async () =>
         DepartureTime: tripData.value.departureDate,
         ArrivalTime: tripData.value.arrivalDate,
         vehicleId: tripData.value.vehicleId,
-        distanceKm: tripData.value.distanceKm,
+        Distance_km: tripData.value.distanceKm,
         Price: tripData.value.price 
       })
     }
@@ -86,13 +86,14 @@ const openTripModal = (order) => {
     to: order.arrivalPoint,
     distanceKm: order.distanceKm  || 0,
      departureDate: order.departureTime || '',
-    arrivalDate: order.arrivalTime || ''
-    
+    arrivalDate: order.arrivalTime || '',
+    Price: order.price || 0,
   }
   console.log('Полный объект заказа:', order)
-  console.log('distance_km:', order.distance_km)
+  console.log('distance_km:', order.distanceKm)
   console.log('DistanceKm:', order.distanceKm)
   showTripModal.value = true
+   calculatePrice()
 }
   const selectedDriverName = computed(() => {
     if (!tripData.value.vehicleId) return ''
@@ -123,7 +124,7 @@ console.log('drivers:', drivers.value)
 const response3 = await fetch('http://localhost:5095/api/Vehicle/GetTransport')
   vehicles.value = await response3.json()
   console.log('vehicles:', vehicles.value)
-  
+  orders.value = sortOrders(data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено'))
 }
 })
 const logout = () => {
@@ -187,7 +188,6 @@ const today = new Date().toISOString().split('T')[0]
 const availableVehicles = computed(() => 
   vehicles.value.filter(v => v.drivers && v.drivers.length > 0)
 )
-
 
 </script>
 <template>

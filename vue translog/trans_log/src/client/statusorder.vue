@@ -13,6 +13,18 @@ const volumem3 = ref('')
 const description = ref('')
 const orders = ref([])
 
+const statusOrder = {
+  'Ожидает оплаты': 0,
+  'Ожидает': 1,
+  'Принято': 2,
+  'Выполняется': 3,
+}
+
+
+const sortOrders = (data) => {
+  return data.sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
+}
+
 onMounted(async () => 
 {
   const userID = parseInt(localStorage.getItem('userId'))
@@ -21,6 +33,7 @@ onMounted(async () =>
     const data = await response.json()
      orders.value = data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено')
   console.log(data)
+  orders.value = sortOrders(data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено'))
 })
 
 const logout = () => {
@@ -41,10 +54,11 @@ const cancel = async (orderId) =>
   const userID = parseInt(localStorage.getItem('userId'))
   const res = await fetch(`http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
   const data = await res.json()
-  orders.value = data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено')
+  orders.value = sortOrders(data.filter(o => o.status !== 'Доставлено' && o.status !== 'Отменено'))
  
   
 }
+
 
 const initials = computed(() => {
   if (!fullname) return ''

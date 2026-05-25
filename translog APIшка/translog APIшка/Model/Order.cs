@@ -31,6 +31,8 @@ public partial class Order
 
     public int? DistanceKm { get; set; }
 
+    public int? Price { get; set; }
+
     public virtual User User { get; set; } = null!;
 
     public virtual Vehicle? Vehicle { get; set; }

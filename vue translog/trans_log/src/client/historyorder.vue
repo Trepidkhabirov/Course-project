@@ -18,13 +18,22 @@ const volumem3 = ref('')
 const description = ref('')
 const orders = ref([])
 
+const statusOrder = {
+  'Ожидает оплаты': 0,
+  'Ожидает': 1,
+  'Принято': 2,
+  'Выполняется': 3,
+  'Доставлено': 4,
+  'Отменено': 5
+}
+
 onMounted(async () => {
 {
   const userID = parseInt(localStorage.getItem('userId'))
   const response = await fetch(
     `http://localhost:5095/api/Order/GetHistory?Userid=${userID}`)
     const data = await response.json()
-  orders.value = data
+orders.value = data.sort((a, b) => (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99))
   console.log(data)
 }
 })
@@ -128,17 +137,19 @@ const totalwait = computed (() => orders.value.filter(o => o.status == 'Ожид
                  <td>{{ order.departureTime ? new Date(order.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте' }} → {{ order.arrivalTime ? new Date(order.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
                <td>{{ order.weight }}</td>
                 <td>
-                     <span 
+     <span 
     class="status"
     :class="{
-      waiting: order.status === 'Ожидает',
+      waiting: order.status === 'Ожидание',
+         accepted: order.status === 'Принято',
+        paying: order.status === 'Ожидает оплаты',
       progress: order.status === 'Выполняется',
       done: order.status === 'Доставлено',
       cancel: order.status === 'Отменено'
     }"
   >
     {{ order.status }}
-  </span> 
+  </span>
 
                 </td>
               </tr>

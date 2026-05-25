@@ -4,7 +4,7 @@
  using translog_APIшка.Model;
  
  namespace translog_APIшка.Controllers;
-
+ 
  [ApiController]
  [Route("api/[controller]")]
  public class UserController : ControllerBase
@@ -17,7 +17,7 @@
          {
              return BadRequest(ModelState);
          }
-
+ 
          var users = db.Users.FromSqlRaw(
              $"select * from users where username = '{login}' and password = '{password}'").ToList();
          if (users.Count() == 0)
@@ -28,7 +28,7 @@
          {
              foreach (var user in users)
              {
-
+ 
                  return Ok(new
                  {
                      message = "Вход выполнен",
@@ -42,14 +42,14 @@
                  });
              }
          }
-
+ 
          return Unauthorized(new { message = "Ошибка авторизации" });
      }
-
+ 
      [HttpPost("register")]
      public IActionResult Register(RegisterModel model)
      {
-
+ 
          if (!ModelState.IsValid)
              return BadRequest(ModelState);
          var db = new TransLogCourseContext();
@@ -58,10 +58,10 @@
          {
              return BadRequest(new { message = "Такой логин уже есть!" });
          }
-
+ 
          var newUser = new User
          {
-
+ 
              Username = model.Username,
              Password = model.Password,
              RoleId = model.RoleId ?? 0,
@@ -84,7 +84,7 @@
              }
          );
      }
-
+ 
      [HttpGet("GetUser")]
      public IActionResult GetUser()
      {
@@ -100,30 +100,30 @@
          {
              return Ok(users);
          }
-
+ 
          return Unauthorized(new { message = "Ошибка" });
      }
-
+ 
      [HttpDelete("DeleteUser")]
      public IActionResult DeleteUser(int userId)
      {
          var db = new TransLogCourseContext();
-
+ 
          var user = db.Users.FirstOrDefault(u => u.UserId == userId);
-
+ 
          if (user == null)
              return BadRequest(new { message = "Пользователь не найден!" });
-
+ 
          var orders = db.Orders.Where(o => o.UserId == userId).ToList();
          db.Orders.RemoveRange(orders);
-
+ 
          var drivers = db.Drivers.Where(d => d.UserId == userId).ToList();
          db.Drivers.RemoveRange(drivers);
-
+ 
          db.Users.Remove(user);
-
+ 
          db.SaveChanges();
-
+ 
          return Ok(new { message = "Пользователь удалён" });
      }
      [HttpPut("UpdateUser")]
@@ -138,12 +138,12 @@
          user.Username = model.Username;
          user.Numberphone = model.Numberphone;
          user.RoleId = model.RoleId;
-
+ 
          db.SaveChanges();
     
          return Ok(new { message = "Пользователь обновлён!" });
      }
-
+ 
  }
  public class RegisterModel
  {

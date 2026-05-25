@@ -86,7 +86,8 @@
                   if (model.DepartureTime != null) o.DepartureTime = model.DepartureTime;
                   if (model.ArrivalTime != null) o.ArrivalTime = model.ArrivalTime;
                   if (model.VehicleId != null) o.VehicleId = model.VehicleId;
-                  if (model.Distance_km != 0) o.DistanceKm = model.Distance_km;
+                  if (model.Distance_km != null) o.DistanceKm = model.Distance_km;
+                  if (model.Price != null) o.Price = model.Price; 
               }
               db.SaveChanges();
               return Ok(new { message = "Заказ обновлен!", order});
@@ -138,5 +139,6 @@
       public DateOnly? ArrivalTime { get; set; }
   
       public string? Description { get; set; }
-      public int Distance_km { get; set; }
+      public int? Distance_km { get; set; }
+      public int? Price { get; set; } 
   }
