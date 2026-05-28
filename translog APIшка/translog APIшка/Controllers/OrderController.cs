@@ -127,6 +127,32 @@
   
           return File(pdfBytes, "application/pdf", $"check_{orderId}.pdf");
       }
+
+          [HttpGet("GetNakladnya")]
+      public IActionResult GetNakladnya(int orderId)
+      {
+          var db = new TransLogCourseContext();
+
+          var order = db.Orders
+              .Include(o => o.Vehicle)
+              .ThenInclude(v => v.Drivers)
+              .ThenInclude(d => d.User)
+              .FirstOrDefault(o => o.OrderId == orderId);
+
+          if (order == null)
+              return NotFound();
+
+          var pdfService = new PdfNakladnaya();
+
+          var pdfBytes = pdfService.GenerateNakladnayaPdf(order);
+
+          return File(
+              pdfBytes,
+              "application/pdf",
+              $"nakladnaya_{orderId}.pdf"
+          );
+      }
+
   }
   
   public class OrderModel

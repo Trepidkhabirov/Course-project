@@ -202,7 +202,7 @@ async function downloadReceipt(orderId) {
                 @click="downloadReceipt(order.orderId)"
                 class="btn-receipt"
                 style="width: 150px; font-size: 14px; height: 40px; background: #2196f3; color: white; border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer; margin-top: 6px; margin-right: 5px">
-                Скачать чек
+                Квитанция
                 </button>
                 <button 
                 v-if="order.status === 'Ожидает оплаты'" 

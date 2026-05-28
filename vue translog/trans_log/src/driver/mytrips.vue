@@ -70,6 +70,38 @@ const initials = computed(() => {
     .join('')
     .toUpperCase()
 })
+const showCheckModal = ref(false)
+const currentCheck = ref(null)
+
+const openCheck = (order) => {
+  currentCheck.value = order
+  showCheckModal.value = true
+}
+
+const printCheck = () => {
+  window.print()
+}
+
+async function downloadReceipt(orderId) {
+  try {
+    const response = await fetch(`http://localhost:5095/api/Order/GetNakladnya?orderId=${orderId}`);
+    if (!response.ok) {
+      alert('Ошибка при скачивании чека');
+      return;
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `nakladnya_${orderId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Ошибка при скачивании чека');
+  }
+}
 </script>
 <template>
   <div class="layout">
@@ -109,11 +141,10 @@ const initials = computed(() => {
             <h2>Мои рейсы</h2>
             <div style="overflow-x: auto; max-width: 100%;">
 
-              <div style="overflow-y: auto; max-height: 660px; text-wrap: nowrap;">
+              <div style="overflow-y: auto; max-height: 640px; text-wrap: nowrap;">
                 <table>
                   <thead>
                     <tr>
-                      <td>Водитель</td>
                       <td>Маршрут</td>
                       <td>Отправление → Прибытие</td>
                       <td>Расстояние</td>
@@ -124,7 +155,6 @@ const initials = computed(() => {
                   </thead>
                   <tbody>
                     <tr v-for="o in orders" :key="o.orderId">
-                      <td>{{ o.vehicle?.drivers?.[0]?.user?.fullName ?? '-' }}</td>
                       <td style="text-wrap: nowrap;">{{ o.departurePoint ?? '-'}}  → {{ o.arrivalPoint }}</td>
                       <td style="text-wrap: nowrap">{{ o.departureTime ? new Date(o.departureTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} → {{ o.arrivalTime ? new Date(o.arrivalTime).toLocaleDateString('ru-RU') : 'Ожидайте'}} </td>
     <td>{{ o.distanceKm || '-' }}</td>
@@ -144,7 +174,11 @@ const initials = computed(() => {
   <td>
     <div style="display: flex; flex-direction: column; gap: 5px;">
       <button class="manbtn" @click="openStatusModal(o)" >Статус</button>
-      <button class="manbtn" @click="openDescModal(o)" >Описание</button>  
+      <button class="manbtn" @click="openDescModal(o)" >Описание</button>
+    <button class="manbtn" @click="downloadReceipt(o.orderId)" :disabled="o.status !== 'Доставлено'" 
+  :style="o.status !== 'Доставлено' ? 'opacity: 0.4; cursor: not-allowed;' : ''">
+  Накладная
+</button>
         </div>
       </td>
     </tr>
@@ -167,7 +201,7 @@ const initials = computed(() => {
     <div class="simple-buttons">
       <button class="simple-cancel" @click="showStatusModal = false">Отмена</button>
       <button class="simple-save" @click="saveStatus">Сохранить</button>
-    </div>
+    </div> 
   </div>
 </div>
 <div v-if="showDescModal" class="showStatusModal">
