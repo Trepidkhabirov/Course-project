@@ -185,7 +185,7 @@ async function downloadReceipt(orderId) {
                     <span 
     class="status"
     :class="{
-      waiting: order.status === 'Ожидание',
+      waiting: order.status === 'Ожидает',
          accepted: order.status === 'Принято',
         paying: order.status === 'Ожидает оплаты',
       progress: order.status === 'Выполняется',
